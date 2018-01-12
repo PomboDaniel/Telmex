@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private GoogleMap mimapa;
     private SupportMapFragment fragmento;
-    int status;
-    Dialog aviso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationView navigationView = findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
 
-            Toast.makeText(this, "Perfecto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Mapa cargado...", Toast.LENGTH_LONG).show();
             iniciaMapa();
         }
     }
