@@ -1,0 +1,86 @@
+{
+    "project_info": {
+    "project_number": "956297765720",
+    "firebase_url": "https://proyecto-telmex.firebaseio.com",
+    "project_id": "proyecto-telmex",
+    "storage_bucket": "proyecto-telmex.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956297765720:android:c556bb8d7959b99e",
+        "android_client_info": {
+          "package_name": "com.example.dell.apptelmex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956297765720-u9gl22pvgmcr1h3rt9t5ld9seivqk8du.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dell.apptelmex",
+            "certificate_hash": "2c0c1c76089eb9bd40e5c1232c99a2ce16096bef"
+          }
+        },
+        {
+          "client_id": "956297765720-ddp6jbjbjaaqa3ahs5t0hqsda7no8ns0.apps.googleusercontent.com",
+          "client_type": 3
+       }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCbVh9TeAjHOAy6-COivURFUEuSVSEZpI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956297765720-ddp6jbjbjaaqa3ahs5t0hqsda7no8ns0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956297765720:android:d996bbc80628a9e7",
+        "android_client_info": {
+          "package_name": "com.example.dan.mapsformacorrecta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956297765720-ddp6jbjbjaaqa3ahs5t0hqsda7no8ns0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCbVh9TeAjHOAy6-COivURFUEuSVSEZpI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

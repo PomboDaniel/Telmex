@@ -21,11 +21,21 @@ import android.widget.Toolbar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -34,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GoogleMap mimapa;
     private SupportMapFragment fragmento;
     private final int LOCATION_REQUEST = 500;
+    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationView navigationView = findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
 
-            Toast.makeText(this, "Mapa cargado...", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Perfecto", Toast.LENGTH_LONG).show();
             iniciaMapa();
         }
     }
@@ -169,6 +181,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         UiSettings ajustes = mimapa.getUiSettings();
         ajustes.setZoomControlsEnabled(true);
 
+        LatLng Ver = new LatLng(19.151801, -96.110851);
+                googleMap.addMarker(new MarkerOptions().position(Ver)
+                                .title("Marker in Veracruz"));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+
+                retrievedata();
+        LatLng  Catemaco= new LatLng(18.419201, -95.111934);
+        googleMap.addMarker(new MarkerOptions().position(Catemaco)
+                                .title("Marker in Catemaco"));
+
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
@@ -194,4 +218,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
     }
+
+
+
+    private void  retrievedata(){
+                Toast.makeText(this, "Entra al retri", Toast.LENGTH_LONG).show();
+                databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                      @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                                ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
+                                for(DataSnapshot entry: dataSnapshot.getChildren()){
+                                        markers_maps place = new markers_maps();
+
+                                                DataSnapshot foo=entry.child("SIGLAS");
+                                        place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                                foo =entry.child("LATITUD");
+                                        place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+
+                                                foo=entry.child("LONGITUD");
+                                        place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+
+
+
+                                                               marker_list.add(place);
+
+                                            }
+                                ponemoslosmarker(marker_list);
+
+
+
+                                                    }
+
+                     @Override
+             public void onCancelled(DatabaseError databaseError) { }
+         });
+            }
+
+             private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
+
+                ///SE GUARDA INFORMACION EN EL SNIPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
+
+                LatLng coorde;
+                for (int i =0; i<marcadores.size();i++){
+                        coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
+                        mimapa.addMarker(new MarkerOptions().position(coorde).title(marcadores.get(i).siglas));
+                        //mimapa.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
+                }
+    }
+
 }
