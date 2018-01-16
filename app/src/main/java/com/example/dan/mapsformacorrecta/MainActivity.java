@@ -111,11 +111,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_camera){
 
-            if( fragmento.isHidden() ){
+            /*if( fragmento.isHidden() ){
                 sfm.beginTransaction().show(fragmento).commit();
             }
 
-            fragmento.getMapAsync(this);
+            fragmento.getMapAsync(this);*/
         }
         else if (id == R.id.nav_gallery) {
 
