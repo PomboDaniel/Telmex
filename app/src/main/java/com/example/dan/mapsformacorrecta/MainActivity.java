@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_gallery) {
 
 
-        }else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_slideshow) {
 
         }
         else if (id == R.id.nav_manage) {
@@ -176,21 +176,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        Bundle datos = this.getIntent().getExtras();
+        int posicionPagina = datos.getInt("position_page");
+
+        //Toast.makeText(this, "posicion: " + posicionPagina, Toast.LENGTH_LONG).show();
+
         mimapa = googleMap;
         mimapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         UiSettings ajustes = mimapa.getUiSettings();
         ajustes.setZoomControlsEnabled(true);
 
         LatLng Ver = new LatLng(19.151801, -96.110851);
-                googleMap.addMarker(new MarkerOptions().position(Ver)
-                                .title("Marker in Veracruz"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+        googleMap.addMarker(new MarkerOptions().position(Ver).title("Marker in Veracruz"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
 
-                retrievedata();
+        retrievedata();
+
         LatLng  Catemaco= new LatLng(18.419201, -95.111934);
-        googleMap.addMarker(new MarkerOptions().position(Catemaco)
-                                .title("Marker in Catemaco"));
-
+        googleMap.addMarker(new MarkerOptions().position(Catemaco).title("Marker in Catemaco"));
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -202,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mimapa.setMyLocationEnabled(true);
     }
-
 
 
     @SuppressLint("MissingPermission")
