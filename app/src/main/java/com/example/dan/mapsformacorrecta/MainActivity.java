@@ -161,49 +161,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void  retrievedata(){
 
                 Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
-                databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
-
-
+                databaseReference.child("CENTRALES").child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
                       @Override
-             public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
                                 for(DataSnapshot entry: dataSnapshot.getChildren()){
                                         markers_maps place = new markers_maps();
 
-                                                DataSnapshot foo=entry.child("SIGLAS");
-                                        place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
+                                    DataSnapshot foo=entry.child("SIGLAS");
+                                    place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                                                foo =entry.child("LATITUD");
-                                        place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+                                    foo =entry.child("LATITUD");
+                                    place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                                foo=entry.child("LONGITUD");
-                                        place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+                                    foo=entry.child("LONGITUD");
+                                    place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
+                                    foo=entry.child("LUGAR");
+                                    place.nombre=foo.getValue() != null ? foo.getValue().toString():"";
 
+                                    foo=entry.child("DIRECCION");
+                                    place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                                               marker_list.add(place);
-
-                                            }
+                                    marker_list.add(place);
+                                        }
                                 ponemoslosmarker(marker_list);
-
-
-
-                                                    }
+                                }
 
                      @Override
-             public void onCancelled(DatabaseError databaseError) { }
-         });
+                public void onCancelled(DatabaseError databaseError) { }
+                });
             }
 
              private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
 
-                ///SE GUARDA INFORMACION EN EL SNIPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
+            ///SE GUARDA INFORMACION EN EL SNIPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
 
-                LatLng coorde;
-                for (int i =0; i<marcadores.size();i++){
+            LatLng coorde;
+            for (int i =0; i<marcadores.size();i++){
                         coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
-                        mimapa.addMarker(new MarkerOptions().position(coorde).title(marcadores.get(i).siglas));
-                        //mimapa.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
+                mimapa.addMarker(new MarkerOptions()
+                        .position(coorde)
+                        .title(marcadores.get(i).nombre)
+                        .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
+                mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
                 }
     }
 
