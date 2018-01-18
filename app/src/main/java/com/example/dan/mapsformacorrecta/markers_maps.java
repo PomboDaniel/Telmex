@@ -7,6 +7,7 @@ package com.example.dan.mapsformacorrecta;
 public class markers_maps {
 
     public String nombre;
+    public String direccion;
     public String siglas;
     public Double latitud;
     public Double longitud;
