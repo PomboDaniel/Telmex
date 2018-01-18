@@ -1,10 +1,16 @@
 package com.example.dan.mapsformacorrecta;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -12,8 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -36,35 +48,29 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.support.v4.view.MenuItemCompat.getActionView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        ,OnMapReadyCallback{
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mimapa;
     private SupportMapFragment fragmento;
-    //Para poder usar firebase necesitamos crear una referencia
-    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private static DatabaseReference RegionReference = FirebaseDatabase.getInstance().getReference();
+    private final int LOCATION_REQUEST = 500;
+    private AutoCompleteTextView auto;
+    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_drawer);
+        setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        auto = (AutoCompleteTextView)findViewById(R.id.idauto);
+
 
         if (servicesDisponible()) {
-
-            android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-
-            NavigationView navigationView = findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
 
             Toast.makeText(this, "Perfecto", Toast.LENGTH_LONG).show();
             iniciaMapa();
@@ -93,82 +99,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     private void iniciaMapa() {
 
-        fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa_telmex);
+        fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         fragmento.getMapAsync(this);
-    }
-
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
-        android.support.v4.app.FragmentManager sfm = getSupportFragmentManager();
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera){
-
-            if( fragmento.isHidden() ){
-                sfm.beginTransaction().show(fragmento).commit();
-            }
-
-            fragmento.getMapAsync(this);
-        }
-        else if (id == R.id.nav_gallery) {
-
-
-        }else if (id == R.id.nav_slideshow) {
-
-        }
-        else if (id == R.id.nav_manage) {
-
-        }
-        else if (id == R.id.nav_share) {
-
-        }
-        else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -176,87 +111,100 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        Bundle datos = this.getIntent().getExtras();
+        int posicionPagina = datos.getInt("position_page");
+
+        //Toast.makeText(this, "posicion: " + posicionPagina, Toast.LENGTH_LONG).show();
+
         mimapa = googleMap;
         mimapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         UiSettings ajustes = mimapa.getUiSettings();
         ajustes.setZoomControlsEnabled(true);
 
         LatLng Ver = new LatLng(19.151801, -96.110851);
-                googleMap.addMarker(new MarkerOptions().position(Ver)
-                                .title("Marker in Veracruz"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+        googleMap.addMarker(new MarkerOptions().position(Ver).title("Marker in Veracruz"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
 
-                retrievedata();
+        retrievedata();
+
         LatLng  Catemaco= new LatLng(18.419201, -95.111934);
-        googleMap.addMarker(new MarkerOptions().position(Catemaco)
-                                .title("Marker in Catemaco"));
-
+        googleMap.addMarker(new MarkerOptions().position(Catemaco).title("Marker in Catemaco"));
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+
             return;
         }
 
         mimapa.setMyLocationEnabled(true);
     }
 
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch (requestCode){
+
+            case LOCATION_REQUEST:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mimapa.setMyLocationEnabled(true);
+                }
+                break;
+        }
+    }
+
+
+
     private void  retrievedata(){
-                Toast.makeText(this, "Entra al retri", Toast.LENGTH_LONG).show();
-                //databaseReference = RegionReference.child("CENTRALES");
-                databaseReference.child("CENTRALES").child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
+
+                Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
+                databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                      @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
                                 for(DataSnapshot entry: dataSnapshot.getChildren()){
                                         markers_maps place = new markers_maps();
 
-                                        DataSnapshot foo=entry.child("SIGLAS");
+                                                DataSnapshot foo=entry.child("SIGLAS");
                                         place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                                        foo =entry.child("LATITUD");
+                                                foo =entry.child("LATITUD");
                                         place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                        foo=entry.child("LONGITUD");
+                                                foo=entry.child("LONGITUD");
                                         place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                                        foo=entry.child("LUGAR");
-                                        place.nombre=foo.getValue() != null ? foo.getValue().toString():"";
 
-                                        foo=entry.child("DIRECCION");
-                                        place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                        marker_list.add(place);
+                                                               marker_list.add(place);
+
                                             }
                                 ponemoslosmarker(marker_list);
-                                }
-                    @Override
+
+
+
+                                                    }
+
+                     @Override
              public void onCancelled(DatabaseError databaseError) { }
-                });
+         });
             }
 
              private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
+
                 ///SE GUARDA INFORMACION EN EL SNIPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
-                        LatLng coorde;
+
+                LatLng coorde;
                 for (int i =0; i<marcadores.size();i++){
                         coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
-                        mimapa.addMarker(new MarkerOptions()
-                                .position(coorde)
-                                .title(marcadores.get(i).nombre)
-                                .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
-                        mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                    //mMap.addMarker(new MarkerOptions().position(coorde).title(hola.get(i).nombre).snippet(hola.get(i).costo+","+hola.get(i).tipo+","+hola.get(i).imagen_url));
-                    //mMap.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
-
-                                    }
+                        mimapa.addMarker(new MarkerOptions().position(coorde).title(marcadores.get(i).siglas));
+                        //mimapa.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
+                }
     }
-
-
 
 }
