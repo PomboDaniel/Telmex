@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
                 databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
 
-
                       @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
