@@ -27,6 +27,7 @@ public class Fragment1 extends Fragment {
         RecyclerView recyclerView = (RecyclerView)root.findViewById(R.id.recyclerFrag1);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
 
         lista_regiones = new ArrayList<>();
         llenaRegiones();

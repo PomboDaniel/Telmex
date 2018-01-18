@@ -4,8 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -37,34 +48,29 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.support.v4.view.MenuItemCompat.getActionView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        ,OnMapReadyCallback{
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mimapa;
     private SupportMapFragment fragmento;
     private final int LOCATION_REQUEST = 500;
+    private AutoCompleteTextView auto;
     private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_drawer);
+        setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        auto = (AutoCompleteTextView)findViewById(R.id.idauto);
+
 
         if (servicesDisponible()) {
-
-            android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-
-            NavigationView navigationView = findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
 
             Toast.makeText(this, "Perfecto", Toast.LENGTH_LONG).show();
             iniciaMapa();
@@ -93,82 +99,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     private void iniciaMapa() {
 
-        fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa_telmex);
+        fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         fragmento.getMapAsync(this);
-    }
-
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
-        android.support.v4.app.FragmentManager sfm = getSupportFragmentManager();
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera){
-
-            /*if( fragmento.isHidden() ){
-                sfm.beginTransaction().show(fragmento).commit();
-            }
-
-            fragmento.getMapAsync(this);*/
-        }
-        else if (id == R.id.nav_gallery) {
-
-
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-        else if (id == R.id.nav_manage) {
-
-        }
-        else if (id == R.id.nav_share) {
-
-        }
-        else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -224,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void  retrievedata(){
-                Toast.makeText(this, "Entra al retri", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
                 databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
 
 
