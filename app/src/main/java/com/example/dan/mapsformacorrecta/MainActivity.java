@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SupportMapFragment fragmento;
     //Para poder usar firebase necesitamos crear una referencia
     private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private static DatabaseReference RegionReference = FirebaseDatabase.getInstance().getReference();
 
 
     @Override
@@ -208,38 +209,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void  retrievedata(){
                 Toast.makeText(this, "Entra al retri", Toast.LENGTH_LONG).show();
-                databaseReference.child("CENTRALES").addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-                      @Override
+                //databaseReference = RegionReference.child("CENTRALES");
+                databaseReference.child("CENTRALES").child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
                                 for(DataSnapshot entry: dataSnapshot.getChildren()){
                                         markers_maps place = new markers_maps();
 
-                                                DataSnapshot foo=entry.child("SIGLAS");
+                                        DataSnapshot foo=entry.child("SIGLAS");
                                         place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                                                foo =entry.child("LATITUD");
+                                        foo =entry.child("LATITUD");
                                         place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                                foo=entry.child("LONGITUD");
+                                        foo=entry.child("LONGITUD");
                                         place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
+                                        foo=entry.child("LUGAR");
+                                        place.nombre=foo.getValue() != null ? foo.getValue().toString():"";
 
+                                        foo=entry.child("DIRECCION");
+                                        place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                                               marker_list.add(place);
-
+                                        marker_list.add(place);
                                             }
                                 ponemoslosmarker(marker_list);
-
-
-
-                                                    }
-
-                     @Override
+                                }
+                    @Override
              public void onCancelled(DatabaseError databaseError) { }
-         });
+                });
             }
 
              private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
@@ -247,8 +246,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         LatLng coorde;
                 for (int i =0; i<marcadores.size();i++){
                         coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
-                        mimapa.addMarker(new MarkerOptions().position(coorde).title(marcadores.get(i).siglas));
-                        //mimapa.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
+                        mimapa.addMarker(new MarkerOptions()
+                                .position(coorde)
+                                .title(marcadores.get(i).nombre)
+                                .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
+                        mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+                    //mMap.addMarker(new MarkerOptions().position(coorde).title(hola.get(i).nombre).snippet(hola.get(i).costo+","+hola.get(i).tipo+","+hola.get(i).imagen_url));
+                    //mMap.setInfoWindowAdapter(new Custominfowindowadapter(MapsActivity.this));
 
                                     }
     }
