@@ -24,8 +24,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int LOCATION_REQUEST = 500;
     private AutoCompleteTextView auto;
     private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
-
+    private ImageButton busca;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +68,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        busca = findViewById(R.id.idBuscar);
 
-        auto = (AutoCompleteTextView)findViewById(R.id.idauto);
+        ArrayAdapter<String> centrales = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+
+        jalaCentralesFirebasee(centrales);
+
+        auto = findViewById(R.id.idauto);
+
+        auto.setThreshold(1);
+        auto.setAdapter(centrales);
+
+        busca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
 
 
         if (servicesDisponible()) {
@@ -111,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Bundle datos = this.getIntent().getExtras();
-        int posicionPagina = datos.getInt("position_page");
+        //Bundle datos = this.getIntent().getExtras();
+        //int posicionPagina = datos.getInt("position_page");
 
         //Toast.makeText(this, "posicion: " + posicionPagina, Toast.LENGTH_LONG).show();
 
@@ -197,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
              private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
 
-            ///SE GUARDA INFORMACION EN EL SNIPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
+            ///SE GUARDA INFORMACION EN EL SNIPPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
 
             LatLng coorde;
             for (int i =0; i<marcadores.size();i++){
@@ -208,6 +225,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
                 }
+    }
+
+
+
+
+    public void jalaCentralesFirebasee(final ArrayAdapter<String> centrales){
+
+        databaseReference.child("CENTRALES").child("VERACRUZ").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot lugaresSnapShot: dataSnapshot.getChildren()){
+
+                    String place = lugaresSnapShot.child("LUGAR").getValue(String.class);
+                    centrales.add(place);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
