@@ -33,13 +33,24 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         String infosnip = marker.getSnippet();
         TextView siglas = (TextView) v.findViewById(R.id.sigla);
         TextView direccion = (TextView) v.findViewById(R.id.direccion);
-        if(!infosnip.equals("")){
-            String[] info= infosnip.split(",");
-            siglas.setText("Siglas de la central: "+ info[0]);
-            direccion.setText(info[1]);
-        }
+        if(infosnip!= null) {
+            String[] info = infosnip.split(",");
+            //siglas.setText("Siglas de la central: " + info[0]);
+            //direccion.setText(info[1]);
+            if (info[0].equals("null")) {
+                siglas.setText("");
+            } else {
+                siglas.setText("Siglas de la central: " + info[0]);
+            }
+            if (info[1].equals("null")) {
+                direccion.setText("Direccion no especificada");
+            } else {
+                direccion.setText(info[1]);
+            }
 
-        return v;
+
+        }
+            return v;
     }
 
     @Override
