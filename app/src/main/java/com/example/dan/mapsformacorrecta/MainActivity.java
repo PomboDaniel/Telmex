@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,6 +14,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +33,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.dan.mapsformacorrecta.Interfaces.IComunicaFragments;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -39,6 +44,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +57,10 @@ import java.util.ArrayList;
 import static android.support.v4.view.MenuItemCompat.getActionView;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class MainActivity extends AppCompatActivity implements
+        GoogleMap.OnInfoWindowClickListener,
+        OnMapReadyCallback,
+        IComunicaFragments{
 
     private GoogleMap mimapa;
     private SupportMapFragment fragmento;
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         fragmento.getMapAsync(this);
+
     }
 
 
@@ -153,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void  retrievedata(final String hijo){
 
                 Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
-                databaseReference.child(hijo).child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
+                databaseReference.child(hijo).child("SAN ANDRES").addListenerForSingleValueEvent(new ValueEventListener() {
                       @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                                 ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
@@ -199,7 +209,60 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .title(marcadores.get(i).nombre)
                         .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+                mimapa.setOnInfoWindowClickListener(this);
                 }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked",
+                Toast.LENGTH_SHORT).show();
+        //FragmentManager fragmentManager = getSupportFragmentManager();
+        //fragmentManager.beginTransaction().replace(R.id.map_fragment, new DetalleFragment()).commit();
+        String Nombre = marker.getTitle();
+        String Siglas = marker.getSnippet();
+        String Direccion = marker.getSnippet();
+
+        IComunicaFragments listener;
+        listener = (IComunicaFragments) this;
+        listener.enviarCentrales(Nombre, Siglas, Direccion);
+
+    }
+
+    @Override
+    public void enviarCentrales(String titulo, String siglas, String direccion) {
+        View v = findViewById(R.id.General_container); // validar container 2 en la vista original
+
+        if (v == null) {
+            Intent intent = new Intent(this, DetalleActivity.class);
+
+            //intent.putExtra(CentralesDetalle.ICON_KEY, imagen); //
+            intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
+            intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
+            intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
+
+
+
+            startActivity(intent);
+
+        } else {
+
+            Bundle bundle = new Bundle ();
+
+           // bundle.putString(CentralesDetalle.ICON_KEY, imagen); //
+            bundle.putString(CentralesDetalle.TEXT_KEY, titulo);
+            bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
+            bundle.putString(CentralesDetalle.SIGLA_KEY, siglas );
+
+
+            CentralesDetalle detailsFragment = CentralesDetalle.newInstance(bundle);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            transaction.replace(R.id.General_container, detailsFragment);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.commit();
+
+        }
     }
 
 }

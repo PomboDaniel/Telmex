@@ -24,6 +24,11 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
+       return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
         String titulo = marker.getTitle();
         TextView tvtitulo = (TextView) v.findViewById(R.id.titulo);
         if (!titulo.equals("")){
@@ -50,11 +55,6 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 
         }
-            return v;
-    }
-
-    @Override
-    public View getInfoContents(Marker marker) {
-        return null;
+        return v;
     }
 }
