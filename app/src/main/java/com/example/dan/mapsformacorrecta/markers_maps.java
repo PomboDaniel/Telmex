@@ -11,4 +11,25 @@ public class markers_maps {
     public String siglas;
     public Double latitud;
     public Double longitud;
+
+
+    public Double getLatitud(){
+        return latitud;
+    }
+
+    public Double getLongitud(){
+        return longitud;
+    }
+
+    public String getNombre(){
+        return nombre;
+    }
+
+    public  String getDireccion(){
+        return direccion;
+    }
+
+    public  String getSiglas(){
+        return siglas;
+    }
 }

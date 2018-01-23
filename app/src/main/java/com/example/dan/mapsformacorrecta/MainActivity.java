@@ -34,13 +34,16 @@ import android.widget.Toolbar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,12 +58,17 @@ import static android.support.v4.view.MenuItemCompat.getActionView;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
 
+    private double lat = 0, lon = 0;
+    private String name;
+    private Marker pin;
     private GoogleMap mimapa;
-    private SupportMapFragment fragmento;
+    private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
     private AutoCompleteTextView auto;
     private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
     private ImageButton busca;
+    private ArrayList<markers_maps> marker_list;
+    private markers_maps place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         busca.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
+                int aux = 0;
+                String texto = auto.getText().toString();
+                if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes rellenar el campo de busqueda", Toast.LENGTH_LONG).show();
+                else{
+
+                    for(markers_maps markers: marker_list){
+
+                        if(texto.equalsIgnoreCase(markers.getNombre())){
+                            lat = markers.getLatitud();
+                            lon = markers.getLongitud();
+                            name = markers.getNombre();
+                            aux = 1;
+                        }
+                    }
+
+                    if(aux == 0) Toast.makeText(getApplicationContext(), "Lugar no encontrado", Toast.LENGTH_LONG).show();
+                    else{
+
+                        mimapa.clear();
+                        LatLng coord = new LatLng(lat, lon);
+                        CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
+                        //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(mark.getNombre()).snippet(mark.getSiglas() + "," + mark.getDireccion()));
+                        //mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+                        pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
+                        mimapa.moveCamera(miLocalizacion);
+                    }
+                }
             }
         });
 
@@ -119,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void iniciaMapa() {
 
-        fragmento = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-        fragmento.getMapAsync(this);
+        fragmento_mapa = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        fragmento_mapa.getMapAsync(this);
     }
 
 
@@ -151,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+
 
             return;
         }
@@ -183,9 +219,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                ArrayList<markers_maps> marker_list = new ArrayList<markers_maps>();
+
+                                marker_list = new ArrayList<markers_maps>();
+
                                 for(DataSnapshot entry: dataSnapshot.getChildren()){
-                                        markers_maps place = new markers_maps();
+
+                                    place = new markers_maps();
 
                                     DataSnapshot foo=entry.child("SIGLAS");
                                     place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
@@ -213,9 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
              private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
-
             ///SE GUARDA INFORMACION EN EL SNIPPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
-
             LatLng coorde;
             for (int i =0; i<marcadores.size();i++){
                         coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
@@ -249,5 +286,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+
+
 
 }
