@@ -172,16 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mimapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         UiSettings ajustes = mimapa.getUiSettings();
         ajustes.setZoomControlsEnabled(true);
-
         LatLng Ver = new LatLng(19.151801, -96.110851);
-        googleMap.addMarker(new MarkerOptions().position(Ver).title("Marker in Veracruz"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
-
-        retrievedata();
-
-        LatLng  Catemaco= new LatLng(18.419201, -95.111934);
-        googleMap.addMarker(new MarkerOptions().position(Catemaco).title("Marker in Catemaco"));
-
+        retrievedata("CENTRALES");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -190,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             return;
         }
-
         mimapa.setMyLocationEnabled(true);
     }
 
@@ -211,13 +203,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-    private void  retrievedata(){
+    private void  retrievedata(final String hijo){
 
                 Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
 
-                databaseReference.child("CENTRALES").child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
-
-                    @Override
+                databaseReference.child(hijo).child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
+                      @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 marker_list = new ArrayList<markers_maps>();
@@ -226,8 +217,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                     place = new markers_maps();
 
-                                    DataSnapshot foo=entry.child("SIGLAS");
-                                    place.siglas= foo.getValue() != null ? foo.getValue().toString(): "";
+                                    DataSnapshot foo=entry.child("LUGAR");
+                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
                                     foo =entry.child("LATITUD");
                                     place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
@@ -235,8 +226,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     foo=entry.child("LONGITUD");
                                     place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                                    foo=entry.child("LUGAR");
-                                    place.nombre=foo.getValue() != null ? foo.getValue().toString():"";
+                                    if(hijo.equals("CENTRALES")) {
+                                        foo = entry.child("SIGLAS");
+                                        place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                    }
 
                                     foo=entry.child("DIRECCION");
                                     place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
