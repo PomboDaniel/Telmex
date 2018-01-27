@@ -16,15 +16,15 @@ import java.util.ArrayList;
 
 public class Fragment1 extends Fragment {
 
-    private ArrayList<Regiones> lista_regiones;
-    private Adapter adapter;
+    public static ArrayList<Regiones> lista_regiones;
+    public static Adapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment1, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)root.findViewById(R.id.recyclerFrag1);
+        RecyclerView recyclerView = root.findViewById(R.id.recyclerFrag1);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
@@ -47,11 +47,10 @@ public class Fragment1 extends Fragment {
     }
 
 
-    public void llenaRegiones(){
+    public static void llenaRegiones(){
 
-        lista_regiones.add(new Regiones("Todas las regiones"));
-        lista_regiones.add(new Regiones("Veracruz"));
-        lista_regiones.add(new Regiones("San andres tuxtla"));
-        lista_regiones.add(new Regiones("Cosamaloapan"));
+        lista_regiones.add(new Regiones("Veracruz", 0));
+        lista_regiones.add(new Regiones("San andres tuxtla", 1));
+        lista_regiones.add(new Regiones("Cosamaloapan", 2));
     }
 }

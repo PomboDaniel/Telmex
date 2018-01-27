@@ -36,7 +36,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
             super(itemView);
 
             titulo = itemView.findViewById(R.id.txtTitulo);
-            ly = (LinearLayout)itemView.findViewById(R.id.linearlayut);
+            ly = itemView.findViewById(R.id.linearlayut);
         }
     }
 
@@ -55,14 +55,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
 
         holder.titulo.setText(lista.get(position).getTitulo());
 
-        holder.ly.setOnClickListener(new View.OnClickListener() {
+        holder.ly.setOnClickListener(new View.OnClickListener() {           //Ponemos a la escucha el layout que tiene el cardview
             @Override
             public void onClick(View view) {
 
-                if(position == 3){
+                if(position == 0){          //Los cardView empiezan en la posicion 0 automaticamente.
 
                     Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra("position_page", position);
+                    intent.putExtra("position_card", position);
                     context.startActivity(intent);
                 }
 

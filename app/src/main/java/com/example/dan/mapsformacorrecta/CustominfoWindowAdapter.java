@@ -45,7 +45,7 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             if (info[0].equals("null")) {
                 siglas.setText("");
             } else {
-                siglas.setText("Siglas de la central: " + info[0]);
+                siglas.setText("Siglas: " + info[0]);
             }
             if (info[1].equals("null")) {
                 direccion.setText("Direccion no especificada");
