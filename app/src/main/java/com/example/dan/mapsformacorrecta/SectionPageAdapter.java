@@ -16,7 +16,6 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
 
         listaFragments.add(frag);
         tituloTab.add(titutlo);
-        //frag.setArguments(args);
     }
 
     public SectionPageAdapter(FragmentManager fm) {

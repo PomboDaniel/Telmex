@@ -55,10 +55,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-
 import static android.support.v4.view.MenuItemCompat.getActionView;
+import static com.example.dan.mapsformacorrecta.Fragment1.adapter;
+import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
+import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
+
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -67,8 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments{
 
     private double lat = 0, lon = 0;
-    private String name;
-    private Marker pin;
+    private String name, siglas, direccion;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
@@ -88,52 +89,60 @@ public class MainActivity extends AppCompatActivity implements
 
         ArrayAdapter<String> centrales = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
 
-        jalaCentralesFirebasee(centrales);
-
-        auto = findViewById(R.id.idauto);
-
-        auto.setThreshold(1);
-        auto.setAdapter(centrales);
-
-        busca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                int aux = 0;
-                String texto = auto.getText().toString();
-                if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes rellenar el campo de busqueda", Toast.LENGTH_LONG).show();
-                else{
-
-                    for(markers_maps markers: marker_list){
-
-                        if(texto.equalsIgnoreCase(markers.getNombre())){
-                            lat = markers.getLatitud();
-                            lon = markers.getLongitud();
-                            name = markers.getNombre();
-                            aux = 1;
-                        }
-                    }
-
-                    if(aux == 0) Toast.makeText(getApplicationContext(), "Lugar no encontrado", Toast.LENGTH_LONG).show();
-                    else{
-
-                        mimapa.clear();
-                        LatLng coord = new LatLng(lat, lon);
-                        CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
-                        //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(mark.getNombre()).snippet(mark.getSiglas() + "," + mark.getDireccion()));
-                        //mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                        pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
-                        mimapa.moveCamera(miLocalizacion);
-                    }
-                }
-            }
-        });
-
-
         if (servicesDisponible()) {
 
-            Toast.makeText(this, "Perfecto", Toast.LENGTH_LONG).show();
             iniciaMapa();
+
+            jalaCentralesFirebasee(centrales);
+
+            auto = findViewById(R.id.idauto);
+
+            auto.setThreshold(1);
+            auto.setAdapter(centrales);
+
+            busca.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    int aux = 0;
+                    String texto = auto.getText().toString();
+                    if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes completar el campo de busqueda", Toast.LENGTH_LONG).show();
+                    else{
+
+                        for(markers_maps markers: marker_list){
+
+                            if(texto.equalsIgnoreCase(markers.getNombre())){
+                                lat = markers.getLatitud();
+                                lon = markers.getLongitud();
+                                name = markers.getNombre();
+                                siglas = markers.getSiglas();
+                                direccion = markers.getDireccion();
+                                aux = 1;
+                            }
+                        }
+
+                        if(aux == 0) Toast.makeText(getApplicationContext(), "Lugar no encontrado", Toast.LENGTH_LONG).show();
+                        else{
+
+                            mimapa.clear();
+                            LatLng coord = new LatLng(lat, lon);
+                            CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
+
+                            mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "," + direccion));
+                            mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+                            //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
+                            mimapa.animateCamera(miLocalizacion);
+
+                            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                            inputMethodManager.hideSoftInputFromWindow(auto.getWindowToken(), 0);
+
+                            auto.setText("");
+                            auto.clearFocus();
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -171,10 +180,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        //Bundle datos = this.getIntent().getExtras();
-        //int posicionPagina = datos.getInt("position_page");
+        Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
+        int posicionCard = datos.getInt("position_card");   //Recibo el/los datos
 
-        //Toast.makeText(this, "posicion: " + posicionPagina, Toast.LENGTH_LONG).show();
+        int idPagina = mViewPager.getCurrentItem();  //Recibimos la pagina en la que estamos
 
         mimapa = googleMap;
         mimapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -182,12 +191,14 @@ public class MainActivity extends AppCompatActivity implements
         ajustes.setZoomControlsEnabled(true);
         LatLng Ver = new LatLng(19.151801, -96.110851);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
-        retrievedata("CENTRALES");
+
+        if(idPagina == 0) retrievedata("CENTRALES", posicionCard);
+        else if(idPagina == 1) retrievedata("RADIOBASES", posicionCard);
+        else retrievedata("TBAS", posicionCard);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-
 
             return;
         }
@@ -211,59 +222,84 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    private void  retrievedata(final String hijo){
+    private void  retrievedata(final String hijo, int posicionCardview){
 
-                Toast.makeText(this, "Entra al retrieve", Toast.LENGTH_LONG).show();
+        for(Regiones region: lista_regiones){
 
-                databaseReference.child(hijo).child("VERACRUZ").addListenerForSingleValueEvent(new ValueEventListener() {
-                      @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+            if(posicionCardview == region.getIndice()){
 
-                                marker_list = new ArrayList<markers_maps>();
+                databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                for(DataSnapshot entry: dataSnapshot.getChildren()){
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    place = new markers_maps();
+                        marker_list = new ArrayList<markers_maps>();
 
-                                    DataSnapshot foo=entry.child("LUGAR");
-                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+                        for(DataSnapshot entry: dataSnapshot.getChildren()){
 
-                                    foo =entry.child("LATITUD");
-                                    place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+                            place = new markers_maps();
+                            DataSnapshot foo;
 
-                                    foo=entry.child("LONGITUD");
-                                    place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+                            foo =entry.child("LATITUD");
+                            place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                    if(hijo.equals("CENTRALES")) {
-                                        foo = entry.child("SIGLAS");
-                                        place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
-                                    }
+                            foo=entry.child("LONGITUD");
+                            place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                                    foo=entry.child("DIRECCION");
-                                    place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+                            foo=entry.child("DIRECCION");
+                            place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                    marker_list.add(place);
-                                        }
-                                ponemoslosmarker(marker_list);
-                                }
+                            if(hijo.equals("CENTRALES")) {
 
-                     @Override
-                public void onCancelled(DatabaseError databaseError) { }
+                                foo = entry.child("LUGAR");
+                                place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                foo = entry.child("SIGLAS");
+                                place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                            }
+                            else if(hijo.equals("RADIOBASES")){
+
+                                foo = entry.child("RB");
+                                place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                foo = entry.child("REF SISA");
+                                place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                            }
+                            else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
+
+                            marker_list.add(place);
+                        }
+
+                        ponemoslosmarker(marker_list);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
                 });
             }
+        }
+    }
 
-             private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
-            ///SE GUARDA INFORMACION EN EL SNIPPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
-            LatLng coorde;
-            for (int i =0; i<marcadores.size();i++){
-                        coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
-                mimapa.addMarker(new MarkerOptions()
-                        .position(coorde)
-                        .title(marcadores.get(i).nombre)
-                        .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
-                mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                mimapa.setOnInfoWindowClickListener(this);
-                }
+
+
+    private void ponemoslosmarker(ArrayList<markers_maps>  marcadores){
+
+        ///SE GUARDA INFORMACION EN EL SNIPPET QUE SE USARA PARA PONERLA EN LA VENTANA DE INFORMACION
+        LatLng coorde;
+
+        for (int i =0; i<marcadores.size();i++){
+
+            coorde= new LatLng(marcadores.get(i).latitud, marcadores.get(i).longitud);
+
+            mimapa.addMarker(new MarkerOptions()
+                    .position(coorde)
+                    .title(marcadores.get(i).nombre)
+                    .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
+
+            mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+            mimapa.setOnInfoWindowClickListener(this);
+        }
     }
 
 
@@ -306,6 +342,8 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
+
     @Override
     public void enviarCentrales(String titulo, String siglas, String direccion) {
         View v = findViewById(R.id.General_container); // validar container 2 en la vista original
@@ -317,8 +355,6 @@ public class MainActivity extends AppCompatActivity implements
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
             intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
-
-
 
             startActivity(intent);
 

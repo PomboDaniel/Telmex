@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 public class ViewPagerActivity extends AppCompatActivity {
 
-    private ViewPager mViewPager;
+    public static ViewPager mViewPager;
     private TabLayout tab;
 
     @Override
