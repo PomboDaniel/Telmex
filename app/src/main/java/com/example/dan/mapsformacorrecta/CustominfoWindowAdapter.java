@@ -39,11 +39,16 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView siglas = (TextView) v.findViewById(R.id.sigla);
         TextView direccion = (TextView) v.findViewById(R.id.direccion);
         if(infosnip!= null) {
-            String[] info = infosnip.split(",");
+            String[] info = infosnip.split("\\|");
             //siglas.setText("Siglas de la central: " + info[0]);
             //direccion.setText(info[1]);
             if (info[0].equals("null")) {
-                siglas.setText("");
+               // siglas.setText("");
+                if (info[2].equals("null")) {
+                    siglas.setText("");
+                } else {
+                    siglas.setText("Referencia SISA: " + info[2]);
+                }
             } else {
                 siglas.setText("Siglas: " + info[0]);
             }
@@ -52,7 +57,6 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             } else {
                 direccion.setText(info[1]);
             }
-
 
         }
         return v;

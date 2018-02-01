@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments{
 
     private double lat = 0, lon = 0;
-    private String name, siglas, direccion;
+    private String name, siglas, direccion, referencia;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements
                                 lon = markers.getLongitud();
                                 name = markers.getNombre();
                                 siglas = markers.getSiglas();
+                                referencia = markers.getReferencia();
                                 direccion = markers.getDireccion();
                                 aux = 1;
                             }
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
                             LatLng coord = new LatLng(lat, lon);
                             CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
-                            mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "," + direccion));
+                            mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
                             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
                             //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
                             mimapa.animateCamera(miLocalizacion);
@@ -263,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements
                                 place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
                                 foo = entry.child("REF SISA");
-                                place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
                             }
                             else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
 
@@ -295,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements
             mimapa.addMarker(new MarkerOptions()
                     .position(coorde)
                     .title(marcadores.get(i).nombre)
-                    .snippet(marcadores.get(i).siglas+ "," + marcadores.get(i).direccion));
+                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia));
 
             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
             mimapa.setOnInfoWindowClickListener(this);
