@@ -1,5 +1,6 @@
 package com.example.dan.mapsformacorrecta;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,12 @@ public class DetalleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_detalle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String carpetaFuente = "fonts/bagad.ttf";
+
+        // Cargamos la fuente
+        Typeface fuente = Typeface.createFromAsset(getAssets(), carpetaFuente);
+
 
         Bundle extras = getIntent().getExtras ();
 

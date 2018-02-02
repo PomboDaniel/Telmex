@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void enviarCentrales(String titulo, String siglas, String direccion) {
-        View v = findViewById(R.id.General_container); // validar container 2 en la vista original
+        View v = findViewById(R.id.General_container);
 
         if (v == null) {
             Intent intent = new Intent(this, DetalleActivity.class);
