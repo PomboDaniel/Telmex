@@ -1,5 +1,6 @@
 package com.example.dan.mapsformacorrecta;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -36,18 +37,19 @@ public class CentralesDetalle extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.info_window, container, false);
+        return inflater.inflate(R.layout.fragment_detalles, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        TextView textView = (TextView) getActivity().findViewById(R.id.titulo);
+        // String carpetaFuente = "fonts/robotocondensedbold.ttf";
+        // Cargamos la fuente
+        //Typeface fuente = Typeface.createFromAsset(getContext().getAssets(), carpetaFuente);
+        TextView textView = (TextView) getActivity().findViewById(R.id.titulo_D);
         //ImageView imageView = (ImageView) getActivity().findViewById(R.id.G_imagen_detalle);
-        TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla);
-        TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion);
-
+        TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla_D);
+        TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion_D);
 
         Bundle extras = getArguments();
 
