@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments{
 
     private double lat = 0, lon = 0;
+    private int posicionCard;
     private String name, siglas, direccion, referencia;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
@@ -181,8 +182,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
-        int posicionCard = datos.getInt("position_card");   //Recibo el/los datos
+        try{
+
+            Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
+            posicionCard = datos.getInt("position_card");   //Recibo el/los datos
+
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Entra al catch", Toast.LENGTH_LONG).show();
+        }
 
         int idPagina = mViewPager.getCurrentItem();  //Recibimos la pagina en la que estamos
 
@@ -222,12 +229,66 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     private void  retrievedata(final String hijo, int posicionCardview){
 
         for(Regiones region: lista_regiones){
 
             if(posicionCardview == region.getIndice()){
+
+                if(region.getTitulo().equalsIgnoreCase("san andres tuxtla")){
+
+                    databaseReference.child(hijo).child("SAN ANDRES").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            marker_list = new ArrayList<markers_maps>();
+
+                            for(DataSnapshot entry: dataSnapshot.getChildren()){
+
+                                place = new markers_maps();
+                                DataSnapshot foo;
+
+                                foo =entry.child("LATITUD");
+                                place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+
+                                foo=entry.child("LONGITUD");
+                                place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+
+                                foo=entry.child("DIRECCION");
+                                place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+
+                                if(hijo.equals("CENTRALES")) {
+
+                                    foo = entry.child("LUGAR");
+                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                    foo = entry.child("SIGLAS");
+                                    place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                }
+                                else if(hijo.equals("RADIOBASES")){
+
+                                    foo = entry.child("RB");
+                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                    foo = entry.child("REF SISA");
+                                    place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+                                }
+                                else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
+
+                                marker_list.add(place);
+                            }
+
+                            ponemoslosmarker(marker_list);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
+
+
 
                 databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
 

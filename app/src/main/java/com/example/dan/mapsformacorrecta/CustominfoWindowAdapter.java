@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.Marker;
  */
 
 public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
     private   View v;
     private Context mcontext;
 
