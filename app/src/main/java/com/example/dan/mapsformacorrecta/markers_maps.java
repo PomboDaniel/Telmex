@@ -11,7 +11,9 @@ public class markers_maps {
     public String siglas;
     public Double latitud;
     public Double longitud;
+    public String referencia;
 
+    public String getReferencia() { return referencia; }
 
     public Double getLatitud(){
         return latitud;
