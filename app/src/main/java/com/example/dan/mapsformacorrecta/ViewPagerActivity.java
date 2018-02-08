@@ -74,7 +74,7 @@ public class ViewPagerActivity extends AppCompatActivity {
 
         adapter.agregaFragment(new Fragment1(), "Centrales");
         adapter.agregaFragment(new Fragment2(), "Radio bases");
-        adapter.agregaFragment(new Fragment3(), "Otro");
+        adapter.agregaFragment(new Fragment3(), "Tbas");
 
         viewPager.setAdapter(adapter);
     }

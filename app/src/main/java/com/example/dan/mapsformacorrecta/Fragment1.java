@@ -1,8 +1,11 @@
 package com.example.dan.mapsformacorrecta;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,12 +22,17 @@ public class Fragment1 extends Fragment {
     public static ArrayList<Regiones> lista_regiones;
     public static Adapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment1, container, false);
 
         RecyclerView recyclerView = root.findViewById(R.id.recyclerFrag1);
+
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getDrawable(R.drawable.line2), false, false));
+        recyclerView.addItemDecoration(new SpaceItemDecoration(getActivity(), R.dimen.list_space, true, true));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), null));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);

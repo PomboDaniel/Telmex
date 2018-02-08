@@ -3,29 +3,21 @@ package com.example.dan.mapsformacorrecta;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Build;
+import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -34,7 +26,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
 import com.example.dan.mapsformacorrecta.Interfaces.IComunicaFragments;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -56,8 +47,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import static android.support.v4.view.MenuItemCompat.getActionView;
-import static com.example.dan.mapsformacorrecta.Fragment1.adapter;
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
 
@@ -69,16 +58,20 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments{
 
     private double lat = 0, lon = 0;
-    private int posicionCard;
+    private int posicionCard, idPagina;
     private String name, siglas, direccion, referencia;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
+    private LocationManager locationManager;
+    private AlertDialog alert = null;
     private AutoCompleteTextView auto;
     private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(); //Para poder usar firebase necesitamos crear una referencia
     private ImageButton busca;
     private ArrayList<markers_maps> marker_list;
     private markers_maps place;
+    private int gps_var = 0;
+    private ArrayAdapter<String> adaptador_dropdownList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,18 +81,22 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         busca = findViewById(R.id.idBuscar);
 
-        ArrayAdapter<String> centrales = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
+        adaptador_dropdownList = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
 
         if (servicesDisponible()) {
 
             iniciaMapa();
 
-            jalaCentralesFirebasee(centrales);
+            /*locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                AlertNoGps();
+            }*/
 
             auto = findViewById(R.id.idauto);
 
             auto.setThreshold(1);
-            auto.setAdapter(centrales);
+            auto.setAdapter(adaptador_dropdownList);
 
             busca.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -178,27 +175,27 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        try{
-
-            Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
-            posicionCard = datos.getInt("position_card");   //Recibo el/los datos
-
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "Entra al catch", Toast.LENGTH_LONG).show();
-        }
-
-        int idPagina = mViewPager.getCurrentItem();  //Recibimos la pagina en la que estamos
 
         mimapa = googleMap;
         mimapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         UiSettings ajustes = mimapa.getUiSettings();
         ajustes.setZoomControlsEnabled(true);
-        LatLng Ver = new LatLng(19.151801, -96.110851);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+
+        try{
+
+            Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
+            posicionCard = datos.getInt("position_card");   //Recibo el dato
+
+            ponZoom();
+
+        }catch (Exception e){
+
+            ponZoom();          //Entra aqui cuando se regresa del infoWindow porque viene vacio el Bundle
+        }
+
+        idPagina = mViewPager.getCurrentItem();  //Recibimos la pagina en la que estamos
 
         if(idPagina == 0) retrievedata("CENTRALES", posicionCard);
         else if(idPagina == 1) retrievedata("RADIOBASES", posicionCard);
@@ -211,6 +208,26 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
         mimapa.setMyLocationEnabled(true);
+    }
+
+
+    public void ponZoom(){
+
+        if(posicionCard == 0){
+
+            LatLng Ver = new LatLng(19.151801, -96.110851);
+            mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+        }
+        else if(posicionCard == 1){
+
+            LatLng sax = new LatLng(18.28073, -95.21427);
+            mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(sax, 10));
+        }
+        else{
+
+            LatLng cos = new LatLng(18.34569, -95.97950);
+            mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(cos, 10));
+        }
     }
 
 
@@ -263,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements
                                     foo = entry.child("LUGAR");
                                     place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
+                                    adaptador_dropdownList.add(place.nombre);
+
                                     foo = entry.child("SIGLAS");
                                     place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
                                 }
@@ -270,6 +289,8 @@ public class MainActivity extends AppCompatActivity implements
 
                                     foo = entry.child("RB");
                                     place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                    adaptador_dropdownList.add(place.nombre);
 
                                     foo = entry.child("REF SISA");
                                     place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
@@ -287,58 +308,62 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
+                else{
 
+                    databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
 
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            marker_list = new ArrayList<markers_maps>();
 
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot entry: dataSnapshot.getChildren()){
 
-                        marker_list = new ArrayList<markers_maps>();
+                                place = new markers_maps();
+                                DataSnapshot foo;
 
-                        for(DataSnapshot entry: dataSnapshot.getChildren()){
+                                foo =entry.child("LATITUD");
+                                place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                            place = new markers_maps();
-                            DataSnapshot foo;
+                                foo=entry.child("LONGITUD");
+                                place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                            foo =entry.child("LATITUD");
-                            place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+                                foo=entry.child("DIRECCION");
+                                place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                            foo=entry.child("LONGITUD");
-                            place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+                                if(hijo.equals("CENTRALES")) {
 
-                            foo=entry.child("DIRECCION");
-                            place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+                                    foo = entry.child("LUGAR");
+                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                            if(hijo.equals("CENTRALES")) {
+                                    adaptador_dropdownList.add(place.nombre);
 
-                                foo = entry.child("LUGAR");
-                                place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+                                    foo = entry.child("SIGLAS");
+                                    place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                }
+                                else if(hijo.equals("RADIOBASES")){
 
-                                foo = entry.child("SIGLAS");
-                                place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                    foo = entry.child("RB");
+                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                    adaptador_dropdownList.add(place.nombre);
+
+                                    foo = entry.child("REF SISA");
+                                    place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+                                }
+                                else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
+
+                                marker_list.add(place);
                             }
-                            else if(hijo.equals("RADIOBASES")){
 
-                                foo = entry.child("RB");
-                                place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
-
-                                foo = entry.child("REF SISA");
-                                place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
-                            }
-                            else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
-
-                            marker_list.add(place);
+                            ponemoslosmarker(marker_list);
                         }
 
-                        ponemoslosmarker(marker_list);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
             }
         }
     }
@@ -366,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    public void jalaCentralesFirebasee(final ArrayAdapter<String> centrales){
+    /*public void jalaCentralesFirebasee(final ArrayAdapter<String> adaptador_dropdownList){
 
         databaseReference.child("CENTRALES").child("VERACRUZ").addValueEventListener(new ValueEventListener() {
             @Override
@@ -375,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements
                 for(DataSnapshot lugaresSnapShot: dataSnapshot.getChildren()){
 
                     String place = lugaresSnapShot.child("LUGAR").getValue(String.class);
-                    centrales.add(place);
+                    adaptador_dropdownList.add(place);
                 }
             }
 
@@ -384,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
-    }
+    }*/
 
 
 
@@ -440,4 +465,47 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
+    public void onPause(){
+                                    //Se ejecuta automaticamente cuando pasas a otro activity, minimizas la app o se pone en
+                                    //segundo plano
+        super.onPause();
+
+        SharedPreferences dato = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor mieditor = dato.edit();
+
+        mieditor.putInt("variable", posicionCard);  //se guarda el valor para que cuando se recargue el mapa no se pierda
+        mieditor.apply();
+    }
+
+
+    public void onResume(){
+
+        super.onResume();
+
+        SharedPreferences dato = PreferenceManager.getDefaultSharedPreferences(this);
+
+        posicionCard = dato.getInt("variable", 0);          //Recogemos el valor guardado del onPause
+    }
+
+
+
+    private void AlertNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("El sistema GPS esta desactivado, ¿Desea activarlo?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+    }
 }

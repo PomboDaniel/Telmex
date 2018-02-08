@@ -10,10 +10,7 @@
     <string name="title_activity_view_pager">ViewPagerActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="search_title">Busca por siglas o nombre...</string>
-    <string name="titulo_page1">Centrales</string>
-    <string name="titulo_page2">RadioBases</string>
-    <string name="titulo_page3">Otro</string>
+    <string name="search_title">Busqueda por nombre...</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
