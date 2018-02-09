@@ -24,7 +24,7 @@
             android:value="AIzaSyDjFMpPCwoTMD504yeyQqEnwZTKst5VRJg"/>
 
         <activity
-            android:name=".ViewPagerActivity"
+            android:name=".prueba"
             android:label="@string/title_activity_view_pager"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -35,6 +35,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".DetalleActivity"
             android:label="@string/Ventana_Detalle"
