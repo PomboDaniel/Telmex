@@ -20,7 +20,7 @@
             android:background="@android:color/holo_blue_dark"
             android:elevation="0dp"
             android:paddingLeft="-50dp"
-            app:srcCompat="@drawable/cos" />
+            app:srcCompat="@drawable/cos_reducido" />
 
     </LinearLayout>
 

@@ -24,7 +24,7 @@
             android:value="AIzaSyDjFMpPCwoTMD504yeyQqEnwZTKst5VRJg"/>
 
         <activity
-            android:name=".prueba"
+            android:name=".ViewPagerActivity"
             android:label="@string/title_activity_view_pager"
             android:theme="@style/AppTheme.NoActionBar">
 
