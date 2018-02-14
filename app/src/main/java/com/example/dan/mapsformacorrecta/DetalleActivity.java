@@ -15,12 +15,6 @@ public class DetalleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_general_detalle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String carpetaFuente = "fonts/bagad.ttf";
-
-        // Cargamos la fuente
-        Typeface fuente = Typeface.createFromAsset(getAssets(), carpetaFuente);
-
-
         Bundle extras = getIntent().getExtras ();
 
         CentralesDetalle detailsFragment = extras != null ?  CentralesDetalle.newInstance (extras) :  CentralesDetalle.newInstance (null);
