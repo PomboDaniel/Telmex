@@ -1,16 +1,17 @@
 <resources>
-    <string name="Ventana_Detalle">Detalles Centrales</string>
-    <string name="app_name">MapsFormaCorrecta</string>
+    <string name="Ventana_Detalle">Detalles</string>
+    <string name="app_name">Mapa</string>
     <string name="title_activity_navigation_drawer">NavigationDrawer</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Contacto</string>
     <string name="title_activity_view_pager">ViewPagerActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="search_title">Busqueda por nombre...</string>
+    <string name="titulo">Telmex</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

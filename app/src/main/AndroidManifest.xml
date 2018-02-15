@@ -8,7 +8,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_telmex"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -25,7 +25,6 @@
 
         <activity
             android:name=".ViewPagerActivity"
-            android:label="@string/title_activity_view_pager"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -35,6 +34,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".DetalleActivity"
             android:label="@string/Ventana_Detalle"

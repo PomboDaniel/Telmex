@@ -36,6 +36,8 @@ public class ViewPagerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         mViewPager = findViewById(R.id.container);
         tab = findViewById(R.id.pestanas);
 
