@@ -21,7 +21,7 @@ public class CentralesDetalle extends Fragment {
     public static String ICON_KEY = "foto";
     public static String TEXT_KEY = "text";
     public static String SIGLA_KEY = "sigla";
-    public static String DIREC_KEY = "direccio";
+    public static String DIREC_KEY = "direccion";
 
 
     public static CentralesDetalle newInstance(@Nullable Bundle extras) {
@@ -37,31 +37,26 @@ public class CentralesDetalle extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_detalles, container, false);
+        return inflater.inflate(R.layout.fragment_details, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // String carpetaFuente = "fonts/robotocondensedbold.ttf";
-        // Cargamos la fuente
-        //Typeface fuente = Typeface.createFromAsset(getContext().getAssets(), carpetaFuente);
+
         TextView textView = (TextView) getActivity().findViewById(R.id.titulo_D);
-        //ImageView imageView = (ImageView) getActivity().findViewById(R.id.G_imagen_detalle);
         TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla_D);
         TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion_D);
 
         Bundle extras = getArguments();
 
         if (extras != null) {
-           // String foto = (String) extras.get(CentralDetalle.ICON_KEY);
             String titulo = (String) extras.get(CentralesDetalle.TEXT_KEY);
             String sigla = (String) extras.get(CentralesDetalle.SIGLA_KEY);
             String direccion = (String) extras.get(CentralesDetalle.DIREC_KEY);
 
 
             textView.setText(titulo); //Nombre
-            //Picasso.with(getContext()).load(foto).into(imageView); //aqui cargamos la imagen
             textView2.setText(sigla);
             textView3.setText(direccion);
 

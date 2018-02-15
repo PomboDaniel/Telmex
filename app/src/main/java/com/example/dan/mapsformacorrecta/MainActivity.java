@@ -12,12 +12,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.support.v7.widget.SearchView;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -464,7 +477,8 @@ public class MainActivity extends AppCompatActivity implements
             mimapa.addMarker(new MarkerOptions()
                     .position(coorde)
                     .title(marcadores.get(i).nombre)
-                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia));
+                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_centrales)));
 
             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
             mimapa.setOnInfoWindowClickListener(this);
@@ -499,15 +513,14 @@ public class MainActivity extends AppCompatActivity implements
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(this, "Info window clicked",
                 Toast.LENGTH_SHORT).show();
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-        //fragmentManager.beginTransaction().replace(R.id.map_fragment, new DetalleFragment()).commit();
         String Nombre = marker.getTitle();
-        String Siglas = marker.getSnippet();
-        String Direccion = marker.getSnippet();
+        String snippet = marker.getSnippet();
+        String[] info = snippet.split("\\|");
+
 
         IComunicaFragments listener;
         listener = (IComunicaFragments) this;
-        listener.enviarCentrales(Nombre, Siglas, Direccion);
+        listener.enviarCentrales(Nombre, info[0], info[1]);
 
     }
 
@@ -525,8 +538,15 @@ public class MainActivity extends AppCompatActivity implements
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
             intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
 
-            startActivity(intent);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
+                getWindow().setExitTransition(new Explode());
+                startActivity(intent,
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+            }
+            else {
+                startActivity(intent);
+            }
         } else {
 
             Bundle bundle = new Bundle ();
