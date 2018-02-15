@@ -4,55 +4,58 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import java.util.ArrayList;
 
 public class Fragment1 extends Fragment {
 
     public static ArrayList<Regiones> lista_regiones;
-    public static Adapter adapter;
-    public static ImageButton btnCos, btnVer, btnSax;
+    //public static Adapter adapter;
+    public static CardView cardCos, cardVer, cardSax;
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment1, container, false);
+        View root = inflater.inflate(R.layout.fragment2, container, false);
 
-        btnCos = root.findViewById(R.id.idCos);
-        btnVer = root.findViewById(R.id.idVer);
-        btnSax = root.findViewById(R.id.idSax);
+        cardCos = root.findViewById(R.id.idCardCos);
+        cardVer = root.findViewById(R.id.idCardVer);
+        cardSax = root.findViewById(R.id.idCardSax);
 
         lista_regiones = new ArrayList<>();
         llenaRegiones();
 
-        btnVer.setOnClickListener(new View.OnClickListener() {
+        cardVer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("position_card", 0);
+                intent.putExtra("clave", 20);
                 startActivity(intent);
             }
         });
 
-        btnCos.setOnClickListener(new View.OnClickListener() {
+        cardCos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("position_card", 2);
+                intent.putExtra("clave", 20);
                 startActivity(intent);
             }
         });
 
-        btnSax.setOnClickListener(new View.OnClickListener() {
+        cardSax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("position_card", 1);
+                intent.putExtra("clave", 20);
                 startActivity(intent);
             }
         });

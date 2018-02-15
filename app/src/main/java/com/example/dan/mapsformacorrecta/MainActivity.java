@@ -48,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
+import static com.example.dan.mapsformacorrecta.Fragment3.lista_tbas;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
 
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments{
 
     private double lat = 0, lon = 0;
-    private int posicionCard, idPagina;
+    private int posicionCard, idPagina, clave;
     private String name, siglas, direccion, referencia;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements
     private ImageButton busca;
     private ArrayList<markers_maps> marker_list;
     private markers_maps place;
-    private int gps_var = 0;
     private ArrayAdapter<String> adaptador_dropdownList;
 
     @Override
@@ -109,14 +109,29 @@ public class MainActivity extends AppCompatActivity implements
 
                         for(markers_maps markers: marker_list){
 
-                            if(texto.equalsIgnoreCase(markers.getNombre())){
-                                lat = markers.getLatitud();
-                                lon = markers.getLongitud();
-                                name = markers.getNombre();
-                                siglas = markers.getSiglas();
-                                referencia = markers.getReferencia();
-                                direccion = markers.getDireccion();
-                                aux = 1;
+                            if(clave == 10){
+
+                                if(texto.equalsIgnoreCase(markers.getSiglas())){
+                                    lat = markers.getLatitud();
+                                    lon = markers.getLongitud();
+                                    name = markers.getNombre();
+                                    siglas = markers.getSiglas();
+                                    referencia = markers.getReferencia();
+                                    direccion = markers.getDireccion();
+                                    aux = 1;
+                                }
+                            }
+                            else{
+
+                                if(texto.equalsIgnoreCase(markers.getNombre())){
+                                    lat = markers.getLatitud();
+                                    lon = markers.getLongitud();
+                                    name = markers.getNombre();
+                                    siglas = markers.getSiglas();
+                                    referencia = markers.getReferencia();
+                                    direccion = markers.getDireccion();
+                                    aux = 1;
+                                }
                             }
                         }
 
@@ -187,8 +202,17 @@ public class MainActivity extends AppCompatActivity implements
 
             Bundle datos = this.getIntent().getExtras();              //Bundle para recibir datos
             posicionCard = datos.getInt("position_card");   //Recibo el dato
+            clave = datos.getInt("clave");
 
-            ponZoom();
+            if(clave == 20){
+                ponZoom();
+            }
+            else{
+                    //Son tbas y ponemos el zoom en Veracruz.
+                LatLng Ver = new LatLng(19.151801, -96.110851);
+                mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+            }
+
 
         }catch (Exception e){
 
@@ -248,123 +272,181 @@ public class MainActivity extends AppCompatActivity implements
 
     private void  retrievedata(final String hijo, int posicionCardview){
 
-        for(Regiones region: lista_regiones){
+        try{
 
-            if(posicionCardview == region.getIndice()){
+            if(clave == 10){        //Se eligieron TBAS
 
-                if(region.getTitulo().equalsIgnoreCase("san andres tuxtla")){
+                for(TBAS tba: lista_tbas){
 
-                    databaseReference.child(hijo).child("SAN ANDRES").addListenerForSingleValueEvent(new ValueEventListener() {
+                    if(posicionCardview == tba.getIndice()){
 
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        databaseReference.child(hijo).child(tba.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                            marker_list = new ArrayList<markers_maps>();
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            for(DataSnapshot entry: dataSnapshot.getChildren()){
+                                marker_list = new ArrayList<markers_maps>();
 
-                                place = new markers_maps();
-                                DataSnapshot foo;
+                                for(DataSnapshot entry: dataSnapshot.getChildren()){
 
-                                foo =entry.child("LATITUD");
-                                place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+                                    place = new markers_maps();
+                                    DataSnapshot foo;
 
-                                foo=entry.child("LONGITUD");
-                                place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+                                    foo =entry.child("LATITUD");
+                                    place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                foo=entry.child("DIRECCION");
-                                place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+                                    foo=entry.child("LONGITUD");
+                                    place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                                if(hijo.equals("CENTRALES")) {
+                                    foo=entry.child("DIRECCION");
+                                    place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                    foo = entry.child("LUGAR");
+                                    foo = entry.child("NOMBRE");
                                     place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                                    adaptador_dropdownList.add(place.nombre);
-
-                                    foo = entry.child("SIGLAS");
+                                    foo = entry.child("DISTRITO");
                                     place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+
+                                    adaptador_dropdownList.add(place.siglas);
+
+                                    marker_list.add(place);
                                 }
-                                else if(hijo.equals("RADIOBASES")){
 
-                                    foo = entry.child("RB");
-                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
-
-                                    adaptador_dropdownList.add(place.nombre);
-
-                                    foo = entry.child("REF SISA");
-                                    place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
-                                }
-                                else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
-
-                                marker_list.add(place);
+                                ponemoslosmarker(marker_list);
                             }
 
-                            ponemoslosmarker(marker_list);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-                else{
-
-                    databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            marker_list = new ArrayList<markers_maps>();
-
-                            for(DataSnapshot entry: dataSnapshot.getChildren()){
-
-                                place = new markers_maps();
-                                DataSnapshot foo;
-
-                                foo =entry.child("LATITUD");
-                                place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
-
-                                foo=entry.child("LONGITUD");
-                                place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
-
-                                foo=entry.child("DIRECCION");
-                                place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
-
-                                if(hijo.equals("CENTRALES")) {
-
-                                    foo = entry.child("LUGAR");
-                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
-
-                                    adaptador_dropdownList.add(place.nombre);
-
-                                    foo = entry.child("SIGLAS");
-                                    place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
-                                }
-                                else if(hijo.equals("RADIOBASES")){
-
-                                    foo = entry.child("RB");
-                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
-
-                                    adaptador_dropdownList.add(place.nombre);
-
-                                    foo = entry.child("REF SISA");
-                                    place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
-                                }
-                                else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
-
-                                marker_list.add(place);
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
                             }
-
-                            ponemoslosmarker(marker_list);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                        });
+                    }
                 }
             }
+            else{
+
+                Toast.makeText(getApplicationContext(), "no es tba", Toast.LENGTH_LONG).show();
+                for(Regiones region: lista_regiones){
+
+                    if(posicionCardview == region.getIndice()){
+
+                        if(region.getTitulo().equalsIgnoreCase("san andres tuxtla")){
+
+                            databaseReference.child(hijo).child("SAN ANDRES").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    marker_list = new ArrayList<markers_maps>();
+
+                                    for(DataSnapshot entry: dataSnapshot.getChildren()){
+
+                                        place = new markers_maps();
+                                        DataSnapshot foo;
+
+                                        foo =entry.child("LATITUD");
+                                        place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+
+                                        foo=entry.child("LONGITUD");
+                                        place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+
+                                        foo=entry.child("DIRECCION");
+                                        place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+
+                                        if(hijo.equals("CENTRALES")) {
+
+                                            foo = entry.child("LUGAR");
+                                            place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                            adaptador_dropdownList.add(place.nombre);
+
+                                            foo = entry.child("SIGLAS");
+                                            place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                        }
+                                        else if(hijo.equals("RADIOBASES")){
+
+                                            foo = entry.child("RB");
+                                            place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                            adaptador_dropdownList.add(place.nombre);
+
+                                            foo = entry.child("REF SISA");
+                                            place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+                                        }
+                                        else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
+
+                                        marker_list.add(place);
+                                    }
+
+                                    ponemoslosmarker(marker_list);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                        else{
+
+                            databaseReference.child(hijo).child(region.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    marker_list = new ArrayList<markers_maps>();
+
+                                    for(DataSnapshot entry: dataSnapshot.getChildren()){
+
+                                        place = new markers_maps();
+                                        DataSnapshot foo;
+
+                                        foo =entry.child("LATITUD");
+                                        place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+
+                                        foo=entry.child("LONGITUD");
+                                        place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+
+                                        foo=entry.child("DIRECCION");
+                                        place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+
+                                        if(hijo.equals("CENTRALES")) {
+
+                                            foo = entry.child("LUGAR");
+                                            place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                            adaptador_dropdownList.add(place.nombre);
+
+                                            foo = entry.child("SIGLAS");
+                                            place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                        }
+                                        else if(hijo.equals("RADIOBASES")){
+
+                                            foo = entry.child("RB");
+                                            place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                            adaptador_dropdownList.add(place.nombre);
+
+                                            foo = entry.child("REF SISA");
+                                            place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+                                        }
+                                        else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
+
+                                        marker_list.add(place);
+                                    }
+
+                                    ponemoslosmarker(marker_list);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+        }catch (Exception e){
+
         }
     }
 
@@ -475,6 +557,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences.Editor mieditor = dato.edit();
 
         mieditor.putInt("variable", posicionCard);  //se guarda el valor para que cuando se recargue el mapa no se pierda
+        mieditor.putInt("variable2", clave);
         mieditor.apply();
     }
 
@@ -486,6 +569,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences dato = PreferenceManager.getDefaultSharedPreferences(this);
 
         posicionCard = dato.getInt("variable", 0);          //Recogemos el valor guardado del onPause
+        clave = dato.getInt("variable2", 0);
     }
 
 
