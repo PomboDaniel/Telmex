@@ -18,7 +18,6 @@ public class Fragment3 extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment3, container, false);
 
-
         card7330 = root.findViewById(R.id.idCard7330);
         card7356 = root.findViewById(R.id.idCard7356);
 
