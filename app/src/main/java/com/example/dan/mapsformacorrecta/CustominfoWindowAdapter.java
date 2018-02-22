@@ -33,6 +33,7 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }
 
         String infosnip = marker.getSnippet();
+        TextView etiqueta = (TextView) v.findViewById(R.id.etiqueta_sigla);
         TextView siglas = (TextView) v.findViewById(R.id.sigla);
         TextView direccion = (TextView) v.findViewById(R.id.direccion);
         if(infosnip!= null) {
@@ -40,12 +41,19 @@ public class CustominfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             if (info[0].equals("null")) {
                 if (info[2].equals("null")) {
-                    siglas.setText("");
+                    if(info[3].equals("null")){
+                        siglas.setText("");    //EN caso de no contar con siglas
+                        etiqueta.setText("");
+                    } else {
+                        siglas.setText(info[3]); //Distrito
+                        etiqueta.setText("Distrito:");
+                    }
                 } else {
-                    siglas.setText("Referencia SISA: " + info[2]);
+                    siglas.setText(info[2]); //Referencia SISA
                 }
             } else {
-                siglas.setText("Siglas: " + info[0]);
+                siglas.setText(info[0]);   //Siglas de la central
+                etiqueta.setText("SIGLAS:");
             }
             if (info[1].equals("null")) {
                 direccion.setText("Direccion no especificada");

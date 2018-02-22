@@ -12,6 +12,9 @@ public class markers_maps {
     public Double latitud;
     public Double longitud;
     public String referencia;
+    public String distrito;
+
+    public String getDistrito() { return distrito; }
 
     public String getReferencia() { return referencia; }
 

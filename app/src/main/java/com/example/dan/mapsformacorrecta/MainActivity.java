@@ -139,9 +139,12 @@ public class MainActivity extends AppCompatActivity implements
                             LatLng coord = new LatLng(lat, lon);
                             CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
-                            mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
+                            mimapa.addMarker(new MarkerOptions()
+                                    .position(coord)
+                                    .title(name)
+                                    .snippet(siglas + "|" + direccion + "|" + referencia)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
                             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                            //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
                             mimapa.animateCamera(miLocalizacion);
 
                             InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -302,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
                                     place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
                                     foo = entry.child("DISTRITO");
-                                    place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                    place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
 
                                     adaptador_dropdownList.add(place.siglas);
 
@@ -461,8 +464,8 @@ public class MainActivity extends AppCompatActivity implements
             mimapa.addMarker(new MarkerOptions()
                     .position(coorde)
                     .title(marcadores.get(i).nombre)
-                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_centrales)));
+                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia+ "|" + marcadores.get(i).distrito)
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
 
             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
             mimapa.setOnInfoWindowClickListener(this);
