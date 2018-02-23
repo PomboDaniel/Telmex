@@ -354,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements
             }
             else{
 
-                Toast.makeText(getApplicationContext(), "no es tba", Toast.LENGTH_LONG).show();
                 for(Regiones region: lista_regiones){
 
                     if(posicionCardview == region.getIndice()){
@@ -542,8 +541,6 @@ public class MainActivity extends AppCompatActivity implements
             
             if(markers.getNombre().equalsIgnoreCase(Nombre)) url = markers.getLink();
         }
-
-        Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
 
         String snippet = marker.getSnippet();
         String[] info = snippet.split("\\|");

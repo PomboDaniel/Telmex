@@ -12,13 +12,10 @@ public class markers_maps {
     public Double latitud;
     public Double longitud;
     public String referencia;
-<<<<<<< HEAD
     public String link;
-=======
     public String distrito;
 
     public String getDistrito() { return distrito; }
->>>>>>> Atelmex/master
 
     public String getReferencia() { return referencia; }
 
