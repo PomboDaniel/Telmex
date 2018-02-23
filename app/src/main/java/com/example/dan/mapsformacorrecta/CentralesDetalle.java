@@ -1,12 +1,15 @@
 package com.example.dan.mapsformacorrecta;
 
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +25,9 @@ public class CentralesDetalle extends Fragment {
     public static String TEXT_KEY = "text";
     public static String SIGLA_KEY = "sigla";
     public static String DIREC_KEY = "direccion";
+    public static String url_key = "algo";
+    Button btn;
+    Intent intent;
 
 
     public static CentralesDetalle newInstance(@Nullable Bundle extras) {
@@ -47,6 +53,7 @@ public class CentralesDetalle extends Fragment {
         TextView textView = (TextView) getActivity().findViewById(R.id.titulo_D);
         TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla_D);
         TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion_D);
+        btn = getActivity().findViewById(R.id.idbtn);
 
         Bundle extras = getArguments();
 
@@ -54,12 +61,20 @@ public class CentralesDetalle extends Fragment {
             String titulo = (String) extras.get(CentralesDetalle.TEXT_KEY);
             String sigla = (String) extras.get(CentralesDetalle.SIGLA_KEY);
             String direccion = (String) extras.get(CentralesDetalle.DIREC_KEY);
-
+            final String linked = (String) extras.get(CentralesDetalle.url_key);
 
             textView.setText(titulo); //Nombre
             textView2.setText(sigla);
             textView3.setText(direccion);
 
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linked));
+                    startActivity(intent);
+                }
+            });
         }
     }
 }

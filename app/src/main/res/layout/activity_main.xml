@@ -29,6 +29,8 @@
             android:nextFocusLeft="@id/idauto"
             android:nextFocusUp="@id/idauto"
             android:textColorHint="#BDBDBD"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             app:layout_constraintBottom_toTopOf="@+id/map_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

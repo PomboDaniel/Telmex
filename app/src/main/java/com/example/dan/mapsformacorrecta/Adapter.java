@@ -64,6 +64,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra("position_card", position);
                     context.startActivity(intent);
+
+                    //Toast.makeText(context.getApplicationContext(), "prueba", Toast.LENGTH_LONG).show();
                 }
                 else if(position == 1){
 

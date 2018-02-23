@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -19,11 +20,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Explode;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.dan.mapsformacorrecta.Interfaces.IComunicaFragments;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,16 +48,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
 import static com.example.dan.mapsformacorrecta.Fragment3.lista_tbas;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
 
 
-
 public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback,
-        IComunicaFragments{
+        IComunicaFragments {
 
     private double lat = 0, lon = 0;
     private int posicionCard, idPagina, clave;
@@ -69,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<markers_maps> marker_list;
     private markers_maps place;
     private ArrayAdapter<String> adaptador_dropdownList;
+    private LocationListener locationListener;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,79 +90,95 @@ public class MainActivity extends AppCompatActivity implements
 
             iniciaMapa();
 
-            /*locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+
                 AlertNoGps();
-            }*/
+            }
 
             auto = findViewById(R.id.idauto);
-
             auto.setThreshold(1);
             auto.setAdapter(adaptador_dropdownList);
+
+            auto.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                    if(i == EditorInfo.IME_ACTION_SEARCH){
+
+                        buscaRegionesFiltrado();
+                    }
+                    return false;
+                }
+            });
+
 
             busca.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    int aux = 0;
-                    String texto = auto.getText().toString();
-                    if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes completar el campo de busqueda", Toast.LENGTH_LONG).show();
-                    else{
-
-                        for(markers_maps markers: marker_list){
-
-                            if(clave == 10){
-
-                                if(texto.equalsIgnoreCase(markers.getSiglas())){
-                                    lat = markers.getLatitud();
-                                    lon = markers.getLongitud();
-                                    name = markers.getNombre();
-                                    siglas = markers.getSiglas();
-                                    referencia = markers.getReferencia();
-                                    direccion = markers.getDireccion();
-                                    aux = 1;
-                                }
-                            }
-                            else{
-
-                                if(texto.equalsIgnoreCase(markers.getNombre())){
-                                    lat = markers.getLatitud();
-                                    lon = markers.getLongitud();
-                                    name = markers.getNombre();
-                                    siglas = markers.getSiglas();
-                                    referencia = markers.getReferencia();
-                                    direccion = markers.getDireccion();
-                                    aux = 1;
-                                }
-                            }
-                        }
-
-                        if(aux == 0) Toast.makeText(getApplicationContext(), "Lugar no encontrado", Toast.LENGTH_LONG).show();
-                        else{
-
-                            mimapa.clear();
-                            LatLng coord = new LatLng(lat, lon);
-                            CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
-
-                            mimapa.addMarker(new MarkerOptions()
-                                    .position(coord)
-                                    .title(name)
-                                    .snippet(siglas + "|" + direccion + "|" + referencia)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
-                            mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                            mimapa.animateCamera(miLocalizacion);
-
-                            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                            inputMethodManager.hideSoftInputFromWindow(auto.getWindowToken(), 0);
-
-                            auto.setText("");
-                            auto.clearFocus();
-                        }
-                    }
+                    buscaRegionesFiltrado();
                 }
             });
+        }
+    }
+
+
+    public void buscaRegionesFiltrado(){
+
+        int aux = 0;
+        String texto = auto.getText().toString();
+        if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes completar el campo de busqueda", Toast.LENGTH_LONG).show();
+        else{
+
+            for(markers_maps markers: marker_list){
+
+                if(clave == 10){
+
+                    if(texto.equalsIgnoreCase(markers.getSiglas())){
+                        lat = markers.getLatitud();
+                        lon = markers.getLongitud();
+                        name = markers.getNombre();
+                        siglas = markers.getSiglas();
+                        referencia = markers.getReferencia();
+                        direccion = markers.getDireccion();
+                        aux = 1;
+                    }
+                }
+                else{
+
+                    if(texto.equalsIgnoreCase(markers.getNombre())){
+                        lat = markers.getLatitud();
+                        lon = markers.getLongitud();
+                        name = markers.getNombre();
+                        siglas = markers.getSiglas();
+                        referencia = markers.getReferencia();
+                        direccion = markers.getDireccion();
+                        aux = 1;
+                    }
+                }
+            }
+
+            if(aux == 0) Toast.makeText(getApplicationContext(), "Lugar no encontrado", Toast.LENGTH_LONG).show();
+            else{
+
+                mimapa.clear();
+                LatLng coord = new LatLng(lat, lon);
+                CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
+
+                mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
+                mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
+                //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
+                mimapa.animateCamera(miLocalizacion);
+
+                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputMethodManager.hideSoftInputFromWindow(auto.getWindowToken(), 0);
+
+                auto.setText("");
+                auto.clearFocus();
+            }
         }
     }
 
@@ -216,7 +238,15 @@ public class MainActivity extends AppCompatActivity implements
 
         }catch (Exception e){
 
-            ponZoom();          //Entra aqui cuando se regresa del infoWindow porque viene vacio el Bundle
+            if(clave == 20){
+                ponZoom();                  //Entra aqui cuando se regresa del infoWindow porque viene vacio el Bundle
+            }
+            else{
+                //Son tbas y ponemos el zoom en Veracruz.
+                LatLng Ver = new LatLng(19.151801, -96.110851);
+                mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(Ver, 13));
+            }
+
         }
 
         idPagina = mViewPager.getCurrentItem();  //Recibimos la pagina en la que estamos
@@ -324,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements
             }
             else{
 
-                Toast.makeText(getApplicationContext(), "no es tba", Toast.LENGTH_LONG).show();
                 for(Regiones region: lista_regiones){
 
                     if(posicionCardview == region.getIndice()){
@@ -371,8 +400,11 @@ public class MainActivity extends AppCompatActivity implements
 
                                             foo = entry.child("REF SISA");
                                             place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+
+                                            foo = entry.child("ENLACE");
+                                            place.link = foo.getValue() != null ? foo.getValue().toString() : "";
+
                                         }
-                                        else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
 
                                         marker_list.add(place);
                                     }
@@ -427,8 +459,10 @@ public class MainActivity extends AppCompatActivity implements
 
                                             foo = entry.child("REF SISA");
                                             place.referencia = foo.getValue() != null ? foo.getValue().toString() : "";
+
+                                            foo = entry.child("ENLACE");
+                                            place.link = foo.getValue() != null ? foo.getValue().toString() : "";
                                         }
-                                        else Toast.makeText(getApplicationContext(), "Por el momento no hay tbas", Toast.LENGTH_LONG).show();
 
                                         marker_list.add(place);
                                     }
@@ -473,7 +507,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     /*public void jalaCentralesFirebasee(final ArrayAdapter<String> adaptador_dropdownList){
 
         databaseReference.child("CENTRALES").child("VERACRUZ").addValueEventListener(new ValueEventListener() {
@@ -498,23 +531,34 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked",
-                Toast.LENGTH_SHORT).show();
+        
+        Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
+        String url = "";
+
         String Nombre = marker.getTitle();
+
+        for(markers_maps markers: marker_list){
+            
+            if(markers.getNombre().equalsIgnoreCase(Nombre)) url = markers.getLink();
+        }
+
         String snippet = marker.getSnippet();
         String[] info = snippet.split("\\|");
 
-
         IComunicaFragments listener;
-        listener = (IComunicaFragments) this;
-        listener.enviarCentrales(Nombre, info[0], info[1], info[2], info[3]);
 
+        listener = this;
+
+
+        listener.enviarCentrales(Nombre, info[0], info[1], url);  //Posicion 3 es el link
     }
 
 
 
     @Override
-    public void enviarCentrales(String titulo, String siglas, String direccion, String referencia, String distrito) {
+
+    public void enviarCentrales(String titulo, String siglas, String direccion, String url) {
+
         View v = findViewById(R.id.General_container);
 
         if (v == null) {
@@ -524,12 +568,12 @@ public class MainActivity extends AppCompatActivity implements
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
             intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
+            intent.putExtra(CentralesDetalle.url_key, url);
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
                 getWindow().setExitTransition(new Explode());
-                startActivity(intent,
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
             }
             else {
                 startActivity(intent);
@@ -542,6 +586,7 @@ public class MainActivity extends AppCompatActivity implements
             bundle.putString(CentralesDetalle.TEXT_KEY, titulo);
             bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
             bundle.putString(CentralesDetalle.SIGLA_KEY, siglas );
+            bundle.putString(CentralesDetalle.url_key, url);
 
 
             CentralesDetalle detailsFragment = CentralesDetalle.newInstance(bundle);
@@ -580,10 +625,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        if(alert != null) alert.dismiss();
+    }
+
 
     private void AlertNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("El sistema GPS esta desactivado, ¿Desea activarlo?")
+        builder.setMessage("El sistema GPS esta desactivado ¿Deseas activarlo?")
                 .setCancelable(false)
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {

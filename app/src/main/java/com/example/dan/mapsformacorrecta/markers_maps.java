@@ -12,6 +12,7 @@ public class markers_maps {
     public Double latitud;
     public Double longitud;
     public String referencia;
+    public String link;
     public String distrito;
 
     public String getDistrito() { return distrito; }
@@ -36,5 +37,9 @@ public class markers_maps {
 
     public  String getSiglas(){
         return siglas;
+    }
+
+    public String getLink(){
+        return link;
     }
 }
