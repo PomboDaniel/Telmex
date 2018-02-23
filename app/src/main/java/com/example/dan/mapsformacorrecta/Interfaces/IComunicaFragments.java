@@ -6,7 +6,5 @@ package com.example.dan.mapsformacorrecta.Interfaces;
 
 public interface IComunicaFragments {
 
-
-
-   abstract  public void enviarCentrales(String titulo, String siglas, String direccion);
+   abstract  public void enviarCentrales(String titulo, String siglas, String direccion, String url);
 }

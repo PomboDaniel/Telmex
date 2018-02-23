@@ -110,6 +110,17 @@
             android:layout_below="@+id/direccion_D"
             android:layout_marginTop="10dp"
             android:background="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/idbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="300dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="Proyecto"
+            android:textColor="@android:color/black" />
+
     </RelativeLayout>
 
 
