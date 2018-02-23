@@ -22,7 +22,8 @@ import android.widget.Toast;
 
 public class CentralesDetalle extends Fragment {
 
-    public static String ICON_KEY = "foto";
+    public static String DIS_KEY = "distrito";
+    public static String REF_KEY = "referencia";
     public static String TEXT_KEY = "text";
     public static String SIGLA_KEY = "sigla";
     public static String DIREC_KEY = "direccion";
@@ -51,6 +52,7 @@ public class CentralesDetalle extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        TextView etiqueta = (TextView) getActivity().findViewById(R.id.tv_etiqueta);
         TextView textView = (TextView) getActivity().findViewById(R.id.titulo_D);
         TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla_D);
         TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion_D);
@@ -63,10 +65,31 @@ public class CentralesDetalle extends Fragment {
             String titulo = (String) extras.get(CentralesDetalle.TEXT_KEY);
             String sigla = (String) extras.get(CentralesDetalle.SIGLA_KEY);
             String direccion = (String) extras.get(CentralesDetalle.DIREC_KEY);
+            String distrito = (String) extras.get(CentralesDetalle.DIS_KEY);
+            String referencia = (String) extras.get(CentralesDetalle.REF_KEY);
             final String linked = (String) extras.get(CentralesDetalle.url_key);
 
+
+            if (sigla.equals("null")) {
+                if (referencia.equals("null")) {
+                    if(distrito.equals("null")){
+                        textView2.setText("Sin especificar");    //EN caso de no contar con siglas
+                        //etiqueta.setText("");
+                    } else {
+                        textView2.setText(distrito); //Distrito
+                        etiqueta.setText("Distrito:");
+                    }
+                } else {
+                    textView2.setText(referencia); //Referencia SISA
+                    etiqueta.setText("Referencia SISA:");
+                }
+            } else {
+                textView2.setText(sigla);   //Siglas de la central
+                //etiqueta.setText("SIGLAS:");
+            }
+
             textView.setText(titulo); //Nombre
-            textView2.setText(sigla);
+            //textView2.setText(sigla);
             textView3.setText(direccion);
 
             Toast.makeText(getContext(), "link: " + linked, Toast.LENGTH_SHORT).show();

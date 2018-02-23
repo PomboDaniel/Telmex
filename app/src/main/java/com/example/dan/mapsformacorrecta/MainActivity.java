@@ -140,6 +140,12 @@ public class MainActivity extends AppCompatActivity implements
                         lat = markers.getLatitud();
                         lon = markers.getLongitud();
                         name = markers.getNombre();
+<<<<<<< HEAD
+=======
+                        siglas = markers.getSiglas();
+                        referencia = markers.getReferencia();
+                        distrito = markers.getDistrito();
+>>>>>>> Atelmex/master
                         direccion = markers.getDireccion();
                         distrito = markers.getDistrito();
                         aux = 1;
@@ -166,11 +172,18 @@ public class MainActivity extends AppCompatActivity implements
                 LatLng coord = new LatLng(lat, lon);
                 CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
+<<<<<<< HEAD
                 if(clave == 10) mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(distrito + "|" + direccion));
                 else mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
 
+=======
+                mimapa.addMarker(new MarkerOptions()
+                        .position(coord)
+                        .title(name)
+                        .snippet(siglas + "|" + direccion + "|" + referencia + "|" + distrito)
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
+>>>>>>> Atelmex/master
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
                 mimapa.animateCamera(miLocalizacion);
 
                 InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -549,27 +562,31 @@ public class MainActivity extends AppCompatActivity implements
         String[] info = snippet.split("\\|");
 
         IComunicaFragments listener;
+
         listener = this;
 
-        //Toast.makeText(this, "msj: " + info[2], Toast.LENGTH_SHORT).show();
 
-        listener.enviarCentrales(Nombre, info[0], info[1], url);  //Posicion 3 es el link
+        listener.enviarCentrales(Nombre, info[0], info[1], url, info[2], info[3]);  //Posicion 3 es el link
     }
 
 
 
     @Override
-    public void enviarCentrales(String titulo, String siglas, String direccion, String url) {
+
+    public void enviarCentrales(String titulo, String siglas, String direccion, String url, String referencia, String distrito) {
+
         View v = findViewById(R.id.General_container);
 
         if (v == null) {
             Intent intent = new Intent(this, DetalleActivity.class);
 
-            //intent.putExtra(CentralesDetalle.ICON_KEY, imagen); //
+
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
-            intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
+            intent.putExtra(CentralesDetalle.DIREC_KEY, direccion);
             intent.putExtra(CentralesDetalle.url_key, url);
+            intent.putExtra(CentralesDetalle.DIS_KEY, distrito);
+            intent.putExtra(CentralesDetalle.REF_KEY, referencia);
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
@@ -583,11 +600,13 @@ public class MainActivity extends AppCompatActivity implements
 
             Bundle bundle = new Bundle ();
 
-           // bundle.putString(CentralesDetalle.ICON_KEY, imagen); //
+
             bundle.putString(CentralesDetalle.TEXT_KEY, titulo);
             bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
             bundle.putString(CentralesDetalle.SIGLA_KEY, siglas );
             bundle.putString(CentralesDetalle.url_key, url);
+            bundle.putString(CentralesDetalle.DIS_KEY, distrito);
+            bundle.putString(CentralesDetalle.REF_KEY, referencia);
 
 
             CentralesDetalle detailsFragment = CentralesDetalle.newInstance(bundle);
