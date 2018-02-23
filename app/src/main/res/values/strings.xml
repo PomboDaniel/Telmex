@@ -1,6 +1,7 @@
 <resources>
     <string name="Ventana_Detalle">Detalles</string>
     <string name="app_name">Mapa</string>
+    <string name="Aplicacion">CMAV</string>
     <string name="title_activity_navigation_drawer">NavigationDrawer</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

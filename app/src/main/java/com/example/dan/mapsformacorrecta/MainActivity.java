@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayAdapter<String> adaptador_dropdownList;
     private LocationListener locationListener;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements
             auto = findViewById(R.id.idauto);
             auto.setThreshold(1);
             auto.setAdapter(adaptador_dropdownList);
-
 
             auto.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements
                                     place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
                                     foo = entry.child("DISTRITO");
-                                    place.siglas = foo.getValue() != null ? foo.getValue().toString() : "";
+                                    place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
 
                                     adaptador_dropdownList.add(place.siglas);
 
@@ -499,8 +499,8 @@ public class MainActivity extends AppCompatActivity implements
             mimapa.addMarker(new MarkerOptions()
                     .position(coorde)
                     .title(marcadores.get(i).nombre)
-                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia + "|" + marcadores.get(i).link)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_centrales)));
+                    .snippet(marcadores.get(i).siglas+ "|" + marcadores.get(i).direccion+ "|" + marcadores.get(i).referencia+ "|" + marcadores.get(i).distrito)
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
 
             mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
             mimapa.setOnInfoWindowClickListener(this);
