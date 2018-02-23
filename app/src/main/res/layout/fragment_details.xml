@@ -45,7 +45,7 @@
             android:background="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tv_etiqueta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView6"
+            android:layout_below="@+id/tv_etiqueta"
             android:layout_marginTop="10dp"
             android:paddingLeft="27dp"
             android:paddingRight="27dp"

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private double lat = 0, lon = 0;
     private int posicionCard, idPagina, clave;
-    private String name, siglas, direccion, referencia;
+    private String name, siglas, direccion, referencia, distrito;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
@@ -136,12 +136,13 @@ public class MainActivity extends AppCompatActivity implements
 
                 if(clave == 10){
 
-                    if(texto.equalsIgnoreCase(markers.getSiglas())){
+                    if(texto.equalsIgnoreCase(markers.getDistrito())){
                         lat = markers.getLatitud();
                         lon = markers.getLongitud();
                         name = markers.getNombre();
                         siglas = markers.getSiglas();
                         referencia = markers.getReferencia();
+                        distrito = markers.getDistrito();
                         direccion = markers.getDireccion();
                         aux = 1;
                     }
@@ -167,9 +168,12 @@ public class MainActivity extends AppCompatActivity implements
                 LatLng coord = new LatLng(lat, lon);
                 CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
-                mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
+                mimapa.addMarker(new MarkerOptions()
+                        .position(coord)
+                        .title(name)
+                        .snippet(siglas + "|" + direccion + "|" + referencia + "|" + distrito)
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
-                //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
                 mimapa.animateCamera(miLocalizacion);
 
                 InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -337,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements
                                     foo = entry.child("DISTRITO");
                                     place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
 
-                                    adaptador_dropdownList.add(place.siglas);
+                                    adaptador_dropdownList.add(place.distrito);
 
                                     marker_list.add(place);
                                 }
@@ -550,14 +554,14 @@ public class MainActivity extends AppCompatActivity implements
         listener = this;
 
 
-        listener.enviarCentrales(Nombre, info[0], info[1], url);  //Posicion 3 es el link
+        listener.enviarCentrales(Nombre, info[0], info[1], url, info[2], info[3]);  //Posicion 3 es el link
     }
 
 
 
     @Override
 
-    public void enviarCentrales(String titulo, String siglas, String direccion, String url) {
+    public void enviarCentrales(String titulo, String siglas, String direccion, String url, String referencia, String distrito) {
 
         View v = findViewById(R.id.General_container);
 
@@ -567,8 +571,10 @@ public class MainActivity extends AppCompatActivity implements
 
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
-            intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
+            intent.putExtra(CentralesDetalle.DIREC_KEY, direccion);
             intent.putExtra(CentralesDetalle.url_key, url);
+            intent.putExtra(CentralesDetalle.DIS_KEY, distrito);
+            intent.putExtra(CentralesDetalle.REF_KEY, referencia);
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
@@ -587,6 +593,8 @@ public class MainActivity extends AppCompatActivity implements
             bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
             bundle.putString(CentralesDetalle.SIGLA_KEY, siglas );
             bundle.putString(CentralesDetalle.url_key, url);
+            bundle.putString(CentralesDetalle.DIS_KEY, distrito);
+            bundle.putString(CentralesDetalle.REF_KEY, referencia);
 
 
             CentralesDetalle detailsFragment = CentralesDetalle.newInstance(bundle);
