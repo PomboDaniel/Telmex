@@ -140,12 +140,6 @@ public class MainActivity extends AppCompatActivity implements
                         lat = markers.getLatitud();
                         lon = markers.getLongitud();
                         name = markers.getNombre();
-<<<<<<< HEAD
-=======
-                        siglas = markers.getSiglas();
-                        referencia = markers.getReferencia();
-                        distrito = markers.getDistrito();
->>>>>>> Atelmex/master
                         direccion = markers.getDireccion();
                         distrito = markers.getDistrito();
                         aux = 1;
@@ -172,17 +166,11 @@ public class MainActivity extends AppCompatActivity implements
                 LatLng coord = new LatLng(lat, lon);
                 CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
-<<<<<<< HEAD
-                if(clave == 10) mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(distrito + "|" + direccion));
-                else mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
-
-=======
                 mimapa.addMarker(new MarkerOptions()
                         .position(coord)
                         .title(name)
                         .snippet(siglas + "|" + direccion + "|" + referencia + "|" + distrito)
                         .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
->>>>>>> Atelmex/master
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
                 mimapa.animateCamera(miLocalizacion);
 
