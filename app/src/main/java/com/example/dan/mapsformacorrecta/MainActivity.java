@@ -507,20 +507,20 @@ public class MainActivity extends AppCompatActivity implements
 
         IComunicaFragments listener;
         listener = (IComunicaFragments) this;
-        listener.enviarCentrales(Nombre, info[0], info[1]);
+        listener.enviarCentrales(Nombre, info[0], info[1], info[2], info[3]);
 
     }
 
 
 
     @Override
-    public void enviarCentrales(String titulo, String siglas, String direccion) {
+    public void enviarCentrales(String titulo, String siglas, String direccion, String referencia, String distrito) {
         View v = findViewById(R.id.General_container);
 
         if (v == null) {
             Intent intent = new Intent(this, DetalleActivity.class);
 
-            //intent.putExtra(CentralesDetalle.ICON_KEY, imagen); //
+
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
             intent.putExtra(CentralesDetalle.DIREC_KEY, direccion); //
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements
 
             Bundle bundle = new Bundle ();
 
-           // bundle.putString(CentralesDetalle.ICON_KEY, imagen); //
+
             bundle.putString(CentralesDetalle.TEXT_KEY, titulo);
             bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
             bundle.putString(CentralesDetalle.SIGLA_KEY, siglas );
