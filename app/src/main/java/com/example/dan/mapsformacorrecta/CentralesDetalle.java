@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.squareup.picasso.Picasso;   SE NECESITA PARA MOSTRAR LA IMAGEN  ANTES AGREGAR EN EL GRADLE
 
@@ -26,8 +27,8 @@ public class CentralesDetalle extends Fragment {
     public static String SIGLA_KEY = "sigla";
     public static String DIREC_KEY = "direccion";
     public static String url_key = "algo";
-    Button btn;
-    Intent intent;
+    private Button btn;
+    private Intent intent;
 
 
     public static CentralesDetalle newInstance(@Nullable Bundle extras) {
@@ -58,6 +59,7 @@ public class CentralesDetalle extends Fragment {
         Bundle extras = getArguments();
 
         if (extras != null) {
+
             String titulo = (String) extras.get(CentralesDetalle.TEXT_KEY);
             String sigla = (String) extras.get(CentralesDetalle.SIGLA_KEY);
             String direccion = (String) extras.get(CentralesDetalle.DIREC_KEY);
@@ -66,6 +68,8 @@ public class CentralesDetalle extends Fragment {
             textView.setText(titulo); //Nombre
             textView2.setText(sigla);
             textView3.setText(direccion);
+
+            Toast.makeText(getContext(), "link: " + linked, Toast.LENGTH_SHORT).show();
 
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private double lat = 0, lon = 0;
     private int posicionCard, idPagina, clave;
-    private String name, siglas, direccion, referencia;
+    private String name, siglas, direccion, referencia, distrito;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
     private final int LOCATION_REQUEST = 500;
@@ -136,13 +136,12 @@ public class MainActivity extends AppCompatActivity implements
 
                 if(clave == 10){
 
-                    if(texto.equalsIgnoreCase(markers.getSiglas())){
+                    if(texto.equalsIgnoreCase(markers.getDistrito())){
                         lat = markers.getLatitud();
                         lon = markers.getLongitud();
                         name = markers.getNombre();
-                        siglas = markers.getSiglas();
-                        referencia = markers.getReferencia();
                         direccion = markers.getDireccion();
+                        distrito = markers.getDistrito();
                         aux = 1;
                     }
                 }
@@ -167,7 +166,9 @@ public class MainActivity extends AppCompatActivity implements
                 LatLng coord = new LatLng(lat, lon);
                 CameraUpdate miLocalizacion = CameraUpdateFactory.newLatLngZoom(coord, 16);
 
-                mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
+                if(clave == 10) mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(distrito + "|" + direccion));
+                else mimapa.addMarker(new MarkerOptions().position(coord).title(name).snippet(siglas + "|" + direccion + "|" + referencia));
+
                 mimapa.setInfoWindowAdapter(new CustominfoWindowAdapter(MainActivity.this));
                 //pin = mimapa.addMarker(new MarkerOptions().position(coord).title(name));
                 mimapa.animateCamera(miLocalizacion);
@@ -337,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements
                                     foo = entry.child("DISTRITO");
                                     place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
 
-                                    adaptador_dropdownList.add(place.siglas);
+                                    adaptador_dropdownList.add(place.distrito);
 
                                     marker_list.add(place);
                                 }
@@ -541,6 +542,8 @@ public class MainActivity extends AppCompatActivity implements
             
             if(markers.getNombre().equalsIgnoreCase(Nombre)) url = markers.getLink();
         }
+
+        Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
 
         String snippet = marker.getSnippet();
         String[] info = snippet.split("\\|");
