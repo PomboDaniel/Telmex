@@ -6,69 +6,86 @@
     android:background="#003790"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        app:srcCompat="@drawable/telmex_toolbar" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
-        android:text="Correo electrónico"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/idTextEmail"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/blanco"
-        android:ems="8"
-        android:inputType="textEmailAddress"
-        android:textColor="@android:color/white" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp"
-        android:text="Contraseña"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/telmex_toolbar" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/idTextPass"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/blanco"
-        android:ems="8"
-        android:inputType="textPassword"
-        android:textColor="@android:color/white" />
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/idSignIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/buttonstyle"
-        android:drawableEnd="@drawable/icono_login"
-        android:paddingEnd="50dp"
-        android:paddingStart="108dp"
-        android:text="Iniciar Sesión"
-        android:textAlignment="textStart" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Correo electrónico"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/idTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/blanco"
+            android:ems="8"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Contraseña"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/idTextPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/blanco"
+            android:ems="8"
+            android:inputType="textPassword"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/idSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/buttonstyle"
+            android:drawableEnd="@drawable/icono_login"
+            android:gravity="center"
+            android:paddingEnd="20dp"
+            android:paddingStart="55dp"
+            android:text="Iniciar Sesión" />
+
+    </LinearLayout>
+
 </LinearLayout>
