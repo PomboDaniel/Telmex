@@ -89,17 +89,18 @@ public class CentralesDetalle extends Fragment {
             }
 
             textView.setText(titulo); //Nombre
-            //textView2.setText(sigla);
             textView3.setText(direccion);
-
-            Toast.makeText(getContext(), "link: " + linked, Toast.LENGTH_SHORT).show();
 
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linked));
-                    startActivity(intent);
+                    if(linked.equalsIgnoreCase("null")) Toast.makeText(getContext(), "Proyecto no disponible", Toast.LENGTH_LONG).show();
+                    else{
+
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linked));
+                        startActivity(intent);
+                    }
                 }
             });
         }

@@ -45,6 +45,11 @@
             android:label="@string/Ventana_Detalle"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".Inicio_sesion"
+            android:label="Acceso">
+        </activity>
+
     </application>
 
 </manifest>

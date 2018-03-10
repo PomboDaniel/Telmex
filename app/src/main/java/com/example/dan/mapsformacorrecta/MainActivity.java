@@ -48,7 +48,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
 import static com.example.dan.mapsformacorrecta.Fragment3.lista_tbas;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments {
 
     private double lat = 0, lon = 0;
-    private int posicionCard, idPagina, clave;
+    private int posicionCard, idPagina, clave, auxi = 0;
     private String name, siglas, direccion, referencia, distrito;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
@@ -536,12 +535,30 @@ public class MainActivity extends AppCompatActivity implements
         
         Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
         String url = "";
-
         String Nombre = marker.getTitle();
 
+        /*for(int i = 0; i < marker_list.size() && auxiliar == -1; i++){
+
+            if(place.getNombre().equalsIgnoreCase(Nombre)){
+
+                url = place.getLink();
+                auxiliar = 1;
+            }
+            else auxiliar = -1;
+        }*/
+
+
         for(markers_maps markers: marker_list){
-            
-            if(markers.getNombre().equalsIgnoreCase(Nombre)) url = markers.getLink();
+
+            if(markers.getNombre().equalsIgnoreCase(Nombre)){
+
+               url = markers.getLink();
+               auxi = 1;
+            }
+        }
+
+        if(auxi == 0){
+            url = "dani";
         }
 
         Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
@@ -553,10 +570,8 @@ public class MainActivity extends AppCompatActivity implements
 
         listener = this;
 
-
         listener.enviarCentrales(Nombre, info[0], info[1], url, info[2], info[3]);  //Posicion 3 es el link
     }
-
 
 
     @Override
@@ -567,7 +582,6 @@ public class MainActivity extends AppCompatActivity implements
 
         if (v == null) {
             Intent intent = new Intent(this, DetalleActivity.class);
-
 
             intent.putExtra(CentralesDetalle.TEXT_KEY, titulo);
             intent.putExtra(CentralesDetalle.SIGLA_KEY, siglas );
@@ -587,7 +601,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
 
             Bundle bundle = new Bundle ();
-
 
             bundle.putString(CentralesDetalle.TEXT_KEY, titulo);
             bundle.putString(CentralesDetalle.DIREC_KEY, direccion); //
