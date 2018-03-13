@@ -48,6 +48,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+
+import static com.example.dan.mapsformacorrecta.CentralesDetalle.btn;
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
 import static com.example.dan.mapsformacorrecta.Fragment3.lista_tbas;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
@@ -547,7 +549,6 @@ public class MainActivity extends AppCompatActivity implements
             else auxiliar = -1;
         }*/
 
-
         for(markers_maps markers: marker_list){
 
             if(markers.getNombre().equalsIgnoreCase(Nombre)){
@@ -555,10 +556,6 @@ public class MainActivity extends AppCompatActivity implements
                url = markers.getLink();
                auxi = 1;
             }
-        }
-
-        if(auxi == 0){
-            url = "dani";
         }
 
         Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();

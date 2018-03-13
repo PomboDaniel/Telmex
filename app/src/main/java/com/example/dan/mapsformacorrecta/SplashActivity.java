@@ -9,8 +9,13 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       Intent intent = new Intent (this, Inicio_sesion.class);
+
+       /*Intent intent = new Intent (this, Inicio_sesion.class);
        startActivity(intent);
-       finish();
+       finish();*/
+
+        Intent intent = new Intent (this, ViewPagerActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

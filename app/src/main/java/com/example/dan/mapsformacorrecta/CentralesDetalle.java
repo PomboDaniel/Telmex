@@ -28,7 +28,7 @@ public class CentralesDetalle extends Fragment {
     public static String SIGLA_KEY = "sigla";
     public static String DIREC_KEY = "direccion";
     public static String url_key = "algo";
-    private Button btn;
+    public static Button btn;
     private Intent intent;
 
 
@@ -68,7 +68,6 @@ public class CentralesDetalle extends Fragment {
             String distrito = (String) extras.get(CentralesDetalle.DIS_KEY);
             String referencia = (String) extras.get(CentralesDetalle.REF_KEY);
             final String linked = (String) extras.get(CentralesDetalle.url_key);
-
 
             if (sigla.equals("null")) {
                 if (referencia.equals("null")) {
