@@ -2,6 +2,7 @@ package com.example.dan.mapsformacorrecta;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ViewPagerActivity extends AppCompatActivity {
 
@@ -64,6 +67,12 @@ public class ViewPagerActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_logout) {
+            FirebaseAuth mAuth;
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            startActivity(new Intent(ViewPagerActivity.this,LoginActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
