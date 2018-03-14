@@ -12,10 +12,8 @@ public class SplashActivity extends AppCompatActivity {
 
        Intent intent = new Intent (this, LoginActivity.class);
        startActivity(intent);
-       finish();
+       this.finish();
 
-        /*Intent intent = new Intent (this, ViewPagerActivity.class);
-        startActivity(intent);
-        finish();*/
+
     }
 }

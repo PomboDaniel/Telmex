@@ -34,6 +34,7 @@ public class Fragment1 extends Fragment {
                 intent.putExtra("position_card", 0);
                 intent.putExtra("clave", 20);
                 startActivity(intent);
+
             }
         });
 

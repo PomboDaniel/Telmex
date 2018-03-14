@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     startActivity(new Intent(LoginActivity.this,ViewPagerActivity.class));
+                    finish();
                 }
             }
         };
@@ -168,25 +169,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void attemptLogin() {
-
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
         // Recuperamos los valores del correo y la contraseña
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        if(email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(LoginActivity.this, "Debes completar los campos",
+                    Toast.LENGTH_SHORT).show();
+        }
+        else{
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                //showProgress(true);
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:success" + task.isSuccessful());
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Contraseña o correo incorecto",
+                                        Toast.LENGTH_SHORT).show();
 
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
+                            }
                         }
-                    }
-                });
-
+                    });
+        }
     }
 
     private boolean isEmailValid(String email) {

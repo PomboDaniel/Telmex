@@ -73,6 +73,9 @@ public class ViewPagerActivity extends AppCompatActivity {
             mAuth = FirebaseAuth.getInstance();
             mAuth.signOut();
             startActivity(new Intent(ViewPagerActivity.this,LoginActivity.class));
+            this.finish();
+
+
         }
 
         return super.onOptionsItemSelected(item);
