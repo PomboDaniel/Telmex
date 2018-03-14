@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onInfoWindowClick(Marker marker) {
         
-        Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
         String url = "";
         String Nombre = marker.getTitle();
 
@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
 
         String snippet = marker.getSnippet();
         String[] info = snippet.split("\\|");
