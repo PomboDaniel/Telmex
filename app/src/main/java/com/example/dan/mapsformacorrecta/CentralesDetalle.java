@@ -16,10 +16,6 @@ import android.widget.Toast;
 
 //import com.squareup.picasso.Picasso;   SE NECESITA PARA MOSTRAR LA IMAGEN  ANTES AGREGAR EN EL GRADLE
 
-/**
- * Created by Dell on 02/01/2018.
- */
-
 public class CentralesDetalle extends Fragment {
 
     public static String DIS_KEY = "distrito";
@@ -27,8 +23,8 @@ public class CentralesDetalle extends Fragment {
     public static String TEXT_KEY = "text";
     public static String SIGLA_KEY = "sigla";
     public static String DIREC_KEY = "direccion";
-    public static String url_key = "algo";
-    public static Button btn;
+    public static String url_key = "";
+    private Button btn;
     private Intent intent;
 
 
@@ -45,18 +41,18 @@ public class CentralesDetalle extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_details, container, false);
+        return inflater.inflate(R.layout.fragment_detalles, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        TextView etiqueta = (TextView) getActivity().findViewById(R.id.tv_etiqueta);
-        TextView textView = (TextView) getActivity().findViewById(R.id.titulo_D);
-        TextView textView2 = (TextView) getActivity().findViewById(R.id.sigla_D);
-        TextView textView3 = (TextView) getActivity().findViewById(R.id.direccion_D);
-        btn = getActivity().findViewById(R.id.idbtn);
+        TextView etiqueta = (TextView) getActivity().findViewById(R.id.Siglas);
+        TextView textView = (TextView) getActivity().findViewById(R.id.idtxtNombre);
+        TextView textView2 = (TextView) getActivity().findViewById(R.id.idtxtSiglas);
+        TextView textView3 = (TextView) getActivity().findViewById(R.id.idtxtDireccion);
+        btn = getActivity().findViewById(R.id.idbtnProyecto);
 
         Bundle extras = getArguments();
 
