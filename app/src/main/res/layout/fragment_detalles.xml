@@ -1,63 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    android:orientation="vertical"
-    >
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/Nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NOMBRE"
+        android:textColor="#080808"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/idtxtNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/Linea"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/titulo_D"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
+
+    <TextView
+        android:id="@+id/Siglas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SIGLAS"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/idtxtSiglas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/linea2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/titulo_D"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
+
+    <TextView
+        android:id="@+id/Direccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DIRECCIÓN"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/idtxtDireccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/linea3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/titulo_D"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:orientation="vertical">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="@mipmap/ic_launcher"
-            android:paddingBottom="10dp" />
 
-        <TextView
-                android:id="@+id/titulo_D"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:text="Nombre"
-                android:textAlignment="center"
-                android:textColor="#000"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/sigla_D"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@fonts/bagad"
-            android:text="SIGLAS"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/direccion_D"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:text="Adress"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="18dp" />
-
+        <Button
+            android:id="@+id/idbtnProyecto"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:background="@drawable/buttonstyle"
+            android:drawableEnd="@drawable/iconomirar"
+            android:elevation="10dp"
+            android:gravity="center"
+            android:paddingEnd="20dp"
+            android:paddingLeft="50dp"
+            android:text="Ver proyecto"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
-
-
-
-</ScrollView>
+</LinearLayout>

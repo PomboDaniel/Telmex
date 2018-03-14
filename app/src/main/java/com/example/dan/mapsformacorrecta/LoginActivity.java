@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     private static final int REQUEST_READ_CONTACTS = 0;
-
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
@@ -69,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.inicio_sesion);
 
         mAuth = FirebaseAuth.getInstance();
-
         mEmailView = findViewById(R.id.idTextEmail);
         mPasswordView = findViewById(R.id.idTextPass);
         //populateAutoComplete();

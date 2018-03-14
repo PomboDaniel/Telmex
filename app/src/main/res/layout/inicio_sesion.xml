@@ -22,7 +22,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="10dp"
             app:srcCompat="@drawable/telmex_toolbar" />
     </LinearLayout>
@@ -84,11 +84,11 @@
         <Button
             android:id="@+id/idSignIn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/buttonstyle"
-            android:drawableEnd="@drawable/icono_login"
+            android:drawableEnd="@drawable/ic_iconosignin"
             android:gravity="center"
             android:paddingEnd="20dp"
             android:paddingStart="55dp"

@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -48,8 +47,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-
-import static com.example.dan.mapsformacorrecta.CentralesDetalle.btn;
 import static com.example.dan.mapsformacorrecta.Fragment1.lista_regiones;
 import static com.example.dan.mapsformacorrecta.Fragment3.lista_tbas;
 import static com.example.dan.mapsformacorrecta.ViewPagerActivity.mViewPager;
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         IComunicaFragments {
 
     private double lat = 0, lon = 0;
-    private int posicionCard, idPagina, clave, auxi = 0;
+    private int posicionCard, idPagina, clave;
     private String name, siglas, direccion, referencia, distrito;
     private GoogleMap mimapa;
     private SupportMapFragment fragmento_mapa;
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<markers_maps> marker_list;
     private markers_maps place;
     private ArrayAdapter<String> adaptador_dropdownList;
-    private LocationListener locationListener;
 
     @SuppressLint("NewApi")
     @Override
@@ -539,22 +535,16 @@ public class MainActivity extends AppCompatActivity implements
         String url = "";
         String Nombre = marker.getTitle();
 
-        /*for(int i = 0; i < marker_list.size() && auxiliar == -1; i++){
 
-            if(place.getNombre().equalsIgnoreCase(Nombre)){
+        if(idPagina != 1) url = "null";
+        else{
 
-                url = place.getLink();
-                auxiliar = 1;
-            }
-            else auxiliar = -1;
-        }*/
+            for(markers_maps markers: marker_list){
 
-        for(markers_maps markers: marker_list){
+                if(markers.getNombre().equalsIgnoreCase(Nombre)){
 
-            if(markers.getNombre().equalsIgnoreCase(Nombre)){
-
-               url = markers.getLink();
-               auxi = 1;
+                    url = markers.getLink();
+                }
             }
         }
 
