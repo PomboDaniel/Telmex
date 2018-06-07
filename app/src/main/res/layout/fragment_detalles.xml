@@ -11,7 +11,7 @@
         android:id="@+id/Nombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NOMBRE"
+        android:text="Nombre"
         android:textColor="#080808"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -39,7 +39,7 @@
         android:id="@+id/Siglas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SIGLAS"
+        android:text="Siglas"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -67,7 +67,7 @@
         android:id="@+id/Direccion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DIRECCIÓN"
+        android:text="Dirección"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
