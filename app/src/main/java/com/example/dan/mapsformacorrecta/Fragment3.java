@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Fragment3 extends Fragment {
 
-    private CardView card7330, card7356;
+    private CardView card7330, card7356, repetidores;
     static ArrayList<TBAS> lista_tbas;
 
     @Override
@@ -20,6 +20,7 @@ public class Fragment3 extends Fragment {
 
         card7330 = root.findViewById(R.id.idCard7330);
         card7356 = root.findViewById(R.id.idCard7356);
+        repetidores = root.findViewById(R.id.idCardRepetidores);
 
         lista_tbas = new ArrayList<>();
         llenaTbas();
@@ -46,6 +47,17 @@ public class Fragment3 extends Fragment {
             }
         });
 
+        repetidores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("position_card", 2);
+                intent.putExtra("clave", 10);
+                startActivity(intent);
+            }
+        });
+
         return root;
     }
 
@@ -54,5 +66,6 @@ public class Fragment3 extends Fragment {
 
         lista_tbas.add(new TBAS("alcatel7330", 0));
         lista_tbas.add(new TBAS("alcatel7356", 1));
+        lista_tbas.add(new TBAS("repetidores", 2));
     }
 }

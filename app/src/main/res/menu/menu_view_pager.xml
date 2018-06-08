@@ -4,9 +4,9 @@
     tools:context="com.example.dan.mapsformacorrecta.ViewPagerActivity">
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/contact"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Contacto"
         app:showAsAction="never"/>
 
     <item

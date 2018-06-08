@@ -126,20 +126,34 @@ public class MainActivity extends AppCompatActivity implements
 
         int aux = 0;
         String texto = auto.getText().toString();
+
         if(texto.isEmpty()) Toast.makeText(getApplicationContext(), "Debes completar el campo de busqueda", Toast.LENGTH_LONG).show();
         else{
 
             for(markers_maps markers: marker_list){
 
-                if(clave == 10){
+                if(clave == 10){      //categoria de tbas
 
-                    if(texto.equalsIgnoreCase(markers.getDistrito())){
-                        lat = markers.getLatitud();
-                        lon = markers.getLongitud();
-                        name = markers.getNombre();
-                        direccion = markers.getDireccion();
-                        distrito = markers.getDistrito();
-                        aux = 1;
+                    if(posicionCard == 2){  //son repetidores
+
+                        if(texto.equalsIgnoreCase(markers.getNombre())){
+                            lat = markers.getLatitud();
+                            lon = markers.getLongitud();
+                            name = markers.getNombre();
+                            direccion = markers.getDireccion();
+                            aux = 1;
+                        }
+                    }
+                    else{               //son tbas
+
+                        if(texto.equalsIgnoreCase(markers.getDistrito())){
+                            lat = markers.getLatitud();
+                            lon = markers.getLongitud();
+                            name = markers.getNombre();
+                            direccion = markers.getDireccion();
+                            distrito = markers.getDistrito();
+                            aux = 1;
+                        }
                     }
                 }
                 else{
@@ -252,7 +266,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if(idPagina == 0) retrievedata("CENTRALES", posicionCard);
         else if(idPagina == 1) retrievedata("RADIOBASES", posicionCard);
-        else retrievedata("TBAS", posicionCard);
+        else {
+
+            if(posicionCard == 2) retrievedata("REPETIDORES", posicionCard);
+            else retrievedata("TBAS", posicionCard);
+        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -291,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (requestCode){
 
             case LOCATION_REQUEST:
+
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mimapa.setMyLocationEnabled(true);
                 }
@@ -309,45 +328,102 @@ public class MainActivity extends AppCompatActivity implements
 
                     if(posicionCardview == tba.getIndice()){
 
-                        databaseReference.child(hijo).child(tba.getTitulo().toUpperCase()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        if(hijo.equals("REPETIDORES")){
 
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                            databaseReference.child(hijo).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                marker_list = new ArrayList<markers_maps>();
+                                    marker_list = new ArrayList<>();
 
-                                for(DataSnapshot entry: dataSnapshot.getChildren()){
+                                    for(DataSnapshot entry: dataSnapshot.getChildren()){
 
-                                    place = new markers_maps();
-                                    DataSnapshot foo;
+                                        place = new markers_maps();
+                                        DataSnapshot foo;
 
-                                    foo =entry.child("LATITUD");
-                                    place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+                                        foo =entry.child("LATITUD");
+                                        place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
 
-                                    foo=entry.child("LONGITUD");
-                                    place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+                                        foo=entry.child("LONGITUD");
+                                        place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
 
-                                    foo=entry.child("DIRECCION");
-                                    place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+                                        foo=entry.child("DIRECCION");
+                                        place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
 
-                                    foo = entry.child("NOMBRE");
-                                    place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+                                        foo = entry.child("ENLACE");
+                                        place.link = foo.getValue() != null ? foo.getValue().toString() : "";
 
-                                    foo = entry.child("DISTRITO");
-                                    place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
+                                        foo = entry.child("NOMBRE");
+                                        place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
 
-                                    adaptador_dropdownList.add(place.distrito);
+                                        adaptador_dropdownList.add(place.nombre);
 
-                                    marker_list.add(place);
+                                        marker_list.add(place);
+                                    }
+
+                                    ponemoslosmarker(marker_list);
                                 }
 
-                                ponemoslosmarker(marker_list);
-                            }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
+                                }
+                            });
+                        }
+                        else{
+
+                            databaseReference.child(hijo).child(tba.getTitulo().toUpperCase())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            marker_list = new ArrayList<markers_maps>();
+
+                                            for(DataSnapshot entry: dataSnapshot.getChildren()){
+
+                                                place = new markers_maps();
+                                                DataSnapshot foo;
+
+                                                foo =entry.child("LATITUD");
+                                                place.latitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()): 10;
+
+                                                foo=entry.child("LONGITUD");
+                                                place.longitud = foo.getValue() != null ? Double.parseDouble(foo.getValue().toString()) : 10 ;
+
+                                                foo=entry.child("DIRECCION");
+                                                place.direccion =foo.getValue() != null ? foo.getValue().toString():"";
+
+                                                foo = entry.child("NOMBRE");
+                                                place.nombre= foo.getValue() != null ? foo.getValue().toString(): "";
+
+                                                if(hijo.equals("TBAS")){
+
+                                                    foo = entry.child("DISTRITO");
+                                                    place.distrito = foo.getValue() != null ? foo.getValue().toString() : "";
+
+                                                    adaptador_dropdownList.add(place.distrito);
+                                                }
+                                                else{   //son repetidores
+
+                                                    Toast.makeText(getApplicationContext(), "repetidoressss", Toast.LENGTH_LONG).show();
+                                                    foo = entry.child("ENLACE");
+                                                    place.link = foo.getValue() != null ? foo.getValue().toString() : "";
+
+                                                    adaptador_dropdownList.add(place.nombre); //porque se va a buscar por nombre en la app
+                                                }
+
+                                                marker_list.add(place);
+                                            }
+
+                                            ponemoslosmarker(marker_list);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                        }
+                                    });
+                        }
                     }
                 }
             }
@@ -536,15 +612,32 @@ public class MainActivity extends AppCompatActivity implements
         String Nombre = marker.getTitle();
 
 
-        if(idPagina != 1) url = "null";
+        if(idPagina == 0) url = "null";  //centrales no llevan proyecto.
         else{
 
-            for(markers_maps markers: marker_list){
+            if(idPagina == 1){  //son radiobases
 
-                if(markers.getNombre().equalsIgnoreCase(Nombre)){
+                for(markers_maps markers: marker_list){
 
-                    url = markers.getLink();
+                    if(markers.getNombre().equalsIgnoreCase(Nombre)){
+
+                        url = markers.getLink();
+                    }
                 }
+            }
+            else{       //categoria tbas
+
+                if(posicionCard == 2){   //son repetidores, estos si tienen proyecto.
+
+                    for(markers_maps markers: marker_list){
+
+                        if(markers.getNombre().equalsIgnoreCase(Nombre)){
+
+                            url = markers.getLink();
+                        }
+                    }
+                }
+                else url = "null";
             }
         }
 

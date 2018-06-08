@@ -8,7 +8,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="logout">Cerrar sesión</string>
-    <string name="action_settings">Contacto</string>
     <string name="title_activity_view_pager">ViewPagerActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
