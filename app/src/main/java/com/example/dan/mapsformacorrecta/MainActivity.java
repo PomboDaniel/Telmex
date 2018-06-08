@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements
         }catch (Exception e){
 
             if(clave == 20){
-                ponZoom();                  //Entra aqui cuando se regresa del infoWindow porque viene vacio el Bundle
+                ponZoom();//Entra aqui cuando se regresa del infoWindow porque viene vacio el Bundle
             }
             else{
                 //Son tbas y ponemos el zoom en Veracruz.
@@ -606,8 +606,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        
-        //Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
+
         String url = "";
         String Nombre = marker.getTitle();
 
@@ -641,7 +640,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        //Toast.makeText(this, "url: " + url, Toast.LENGTH_SHORT).show();
 
         String snippet = marker.getSnippet();
         String[] info = snippet.split("\\|");
